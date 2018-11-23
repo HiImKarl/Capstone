@@ -3,7 +3,7 @@ import quandl
 import datetime
 import requests
 from dateutil.relativedelta import relativedelta
-from instance.config import INTRINIO_API_KEY_DAVID, QUANDL_API_KEY
+from instance.config import INTRINIO_API_KEYS, QUANDL_API_KEY
 from app.util import limit_list_size, synchronize_list
 
 # maximum number of data points we want to extract
@@ -20,16 +20,13 @@ with open('data/etf_tickers.csv', 'r') as f:
     reader = csv.reader(f)
     ETF_TICKERS = [ticker.strip() for ticker in list(reader)[0]]
 
-with open('data/factors.csv') as f:
+with open('data/factors.csv', 'r') as f:
     reader = csv.reader(f)
     FF_FACTORS = []
-    for count, row in enumerate(reader):
+    for row in reader:
         # the first column is the date
         FF_FACTORS.append((float(row[1]), float(row[2]),
                            float(row[3]), float(row[4])))
-
-        if count == MAX_NUMBER_DATA_POINTS:
-            break
 
 QUANDL_US_STOCK_DB_NAME = 'WIKI'
 quandl.ApiConfig.api_key = QUANDL_API_KEY
@@ -53,12 +50,15 @@ def intrinio_historical_market_cap(ticker):
         'start_date': PAST_DATETIME.strftime('%Y-%m-%d'),
         'end_date': TODAY_DATETIME.strftime('%Y-%m-%d'),
         'frequency': 'weekly',
-        'api_key': INTRINIO_API_KEY_DAVID
+        'api_key': INTRINIO_API_KEYS[-1]
     }
 
     response = requests.get(url=INTRINIO_URL_BASE + 'historical_data', params=params)
     json_data = response.json()
     data = [data_point['value'] for data_point in json_data['data']]
+
+    # intrinio returns data from latest to earliest, want other way around
+    data.reverse()
 
     return data
 
@@ -83,9 +83,6 @@ def get_sp500_data():
 
         price_array = raw_data.iloc[:, [10]].values
         price_array = [price[0] for price in price_array]
-
-        # quandl returns data from earliest to latest, want other way around
-        price_array.reverse()
 
         market_cap_array = intrinio_historical_market_cap(STOCK_TICKERS[i])
 

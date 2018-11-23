@@ -12,13 +12,12 @@ def limit_list_size(a, length):
     :param a: a list of size n
     :param length: size to limit a to
     reduces the size of the larger of a to MAX_NUMBER_DATA_POINTS
-    if the list exceed that size by deleting from the beginning
+    if the list exceed that size by deleting from the end
     :return: a
     """
 
     if len(a) > length:
-        diff = len(a) - length
-        return a[diff:]
+        return a[-length:]
 
     return a
 
@@ -27,14 +26,12 @@ def synchronize_list(a, b):
     """
     :param a: a list of size n
     :param b: a list of size m
-    reduces the size of the larger of a or b by deleting from the beginning
+    reduces the size of the larger of a or b by deleting from the end
     :return: tuple a, b
     """
 
     if len(a) > len(b):
-        diff = len(a) - len(b)
-        return a[diff:], b
+        return a[-len(b):], b
     elif len(a) < len(b):
-        diff = len(b) - len(a)
-        return a, b[diff:]
+        return a, b[-len(a):]
     return a, b

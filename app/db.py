@@ -40,23 +40,28 @@ def init_db():
     factors = [[FACTOR[0], FACTOR[1], FACTOR[2]] for FACTOR in FF_FACTORS]
     risk_free = [FACTOR[3] for FACTOR in FF_FACTORS]
 
-    # make sure the factors are the same size as the returns
-    factors = limit_list_size(factors, len(arbitrary_value_from_dict(market_caps)))
-    risk_free = limit_list_size(risk_free, len(arbitrary_value_from_dict(market_caps)))
-    xfactors = np.array(factors, dtype=np.dtype('float'))
-    xrisk_free = np.array(risk_free, dtype=np.dtype('float'))
-
     # populate the asset and asset data tables
-    assert(not market_caps == {})
-    times = [TODAY_DATETIME - relativedelta(weeks=i) for i in range(len(arbitrary_value_from_dict(market_caps)))]
-    assert(len(times) == len(arbitrary_value_from_dict(market_caps)))
-
-    returns = [[price_array[i] / price_array[0] for i in range(len(price_array))]
+    returns = [[price_array[i] / price_array[i - 1] - 1 for i in range(1, len(price_array))]
                for ticker, price_array in prices.items()]
+
+    times = [TODAY_DATETIME - relativedelta(weeks=i) for i in range(len(returns[0]))]
+    assert(len(times) == len(returns[0]))
+
     xreturns = np.array(returns, dtype=np.dtype('float'))
     xreturns = np.transpose(xreturns)
 
+    # make sure the factors are the same size as the returns
+    factors = limit_list_size(factors, len(returns[0]))
+    risk_free = limit_list_size(risk_free, len(returns[0]))
+
+    xfactors = np.array(factors, dtype=np.dtype('float'))
+    xrisk_free = np.array(risk_free, dtype=np.dtype('float'))
+
     xcoefficients = ff3_ols(xreturns, xfactors, xrisk_free)
+
+    print(xcoefficients.shape)
+    print(xcoefficients)
+
     xff_returns = ff3_return_estimates(xreturns, xfactors, xrisk_free, xcoefficients)
     xff_covariances = ff3_cov_est(xreturns, xfactors, xcoefficients)
 
@@ -66,8 +71,6 @@ def init_db():
     assert(len(ff_returns) == len(STOCK_TICKERS))
     assert(len(ff_covariances) == len(STOCK_TICKERS))
     assert(len(ff_covariances[0]) == len(STOCK_TICKERS))
-
-    print(xff_covariances)
 
     db.executemany(
         'INSERT INTO Asset (ticker, average_return) VALUES (?, ?)',

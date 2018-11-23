@@ -5,8 +5,8 @@ import statsmodels.api as sm
 
 # estimate the optimization parameters using the generated factors
 def ff3_return_estimates(returns, factors, rf, coefficients):
+
     # array to hold ff3 ret estimates
-    # FIXME compute geometric mean instead of arithmetic
     ff3_ret = []
     # mean of risk-free
     mu_rf = np.mean(rf)
@@ -81,12 +81,12 @@ def ff3_ols(returns, factors, rf):
         target = pd.DataFrame(data=indep_var)
 
         # linear regression
-        X = df[["Market", "HML", "SMB"]]
+        x = df[["Market", "HML", "SMB"]]
 
         # add constant for alpha
-        X = sm.add_constant(X)
+        x = sm.add_constant(x)
         y = target[indep_str]
-        model = sm.OLS(y, X).fit()
+        model = sm.OLS(y, x).fit()
         ff3_coefficient_i = [model.params.const, model.params.Market, model.params.SMB, model.params.HML]
         ff3_coefficient.append(ff3_coefficient_i)
 
