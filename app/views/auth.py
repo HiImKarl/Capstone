@@ -25,7 +25,7 @@ def register():
 
         if error is None:
             db.execute(
-                'INSERT INTO User (username, password) VALUES (?, ?)',
+                'INSERT INTO User (username, password, risk_profile) VALUES (?, ?, 0)',
                 (username, generate_password_hash(password), )
             )
             db.commit()
