@@ -1,0 +1,7 @@
+MANIFEST.in
+setup.py
+Money_Rocket.egg-info/PKG-INFO
+Money_Rocket.egg-info/SOURCES.txt
+Money_Rocket.egg-info/dependency_links.txt
+Money_Rocket.egg-info/not-zip-safe
+Money_Rocket.egg-info/top_level.txt

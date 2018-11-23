@@ -1,0 +1,15 @@
+{% extends "auth/base.jinja2" %}
+{% from "_form.jinja2" import render_field %}
+{% block head %}
+    <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <dl>
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+        </dl>
+        <p><input type="submit" value="Sign Up"></p>
+    </form>
+{% endblock %}

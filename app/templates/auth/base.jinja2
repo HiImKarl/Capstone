@@ -1,0 +1,21 @@
+{% block head %}{% endblock %}
+<nav>
+<h2>Money Rocket</h2><p>A Simple Portfolio Optimizer</p>
+<ul>
+    {% if g.user %}
+    <li><span>{{ g.user['username'] }}</span>
+    <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+    <li><a href="{{ url_for('auth.login') }}">Log In</a>
+    <li><a href="{{ url_for('auth.register') }}">Register</a>
+    {% endif %}
+</ul>
+</nav>
+<section>
+    <header>
+    </header>
+    {% for message in get_flashed_messages() %}
+        <div >{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+</section>

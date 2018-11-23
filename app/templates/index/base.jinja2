@@ -1,0 +1,21 @@
+<h2>Money Rocket</h2>
+<p>A Simple Portfolio Optimizer</p>
+<nav>
+    <li><span>{{ g.user['username'] }}</span>
+    <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    <ul>
+        <li><a href="{{ url_for('index.index') }}">Overview</a>
+        <li><a href="{{ url_for('index.reports') }}">Reports</a>
+        <li><a href="{{ url_for('index.preferences') }}">Preferences</a>
+        <li><a href="{{ url_for('index.portfolios') }}">Portfolio</a>
+    </ul>
+</nav>
+<section>
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {% for message in get_flashed_messages() %}
+        <div >{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+</section>
