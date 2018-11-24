@@ -43,9 +43,6 @@ body {
     to   { opacity: 1; }
 }
 
-.base {
-    margin-left: 10px;
-}
 
 .right {
     float: right;
@@ -55,22 +52,65 @@ body {
     margin: 0 10px;
 }
 
-.content {
-    margin-left: 10px;
-}
-
 .justify {
-    margin: 10px;
+
     border-radius: 10px;
     padding-left: 20px;
 }
 
-.form-control-borderless {
-    border: none;
+.stock {
+	position: relative;
+	display: inline-block;
+	width: 15%;
+	padding: 20px 10px;
+	margin: 10px;
+	background-color: #FFF;
+	border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    font-weight: lighter;
+}
+.hover {
+    cursor: pointer;
+}
+.middle {
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
-    border: none;
-    outline: none;
-    box-shadow: none;
+.omega {
+    margin-left: 9%;
+    padding-bottom: 11px;
+    margin-right: 10px;
+}
+#myInput {
+    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 80%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 12px 20px 12px 12px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+}
+
+#myUL {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#myUL li a {
+    border: 1px solid #ddd; /* Add a border to all links */
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6; /* Grey background color */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove default text underline */
+    font-size: 18px; /* Increase the font-size */
+    color: black; /* Add a black text color */
+    display: block; /* Make it into a block element to fill the whole list */
+}
+
+#myUL li a:hover:not(.header) {
+    background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
