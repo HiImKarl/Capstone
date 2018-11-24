@@ -3,5 +3,4 @@ instance/
 venv/
 *.info
 *.egg-info
-*~
 build/

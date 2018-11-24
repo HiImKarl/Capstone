@@ -5,7 +5,8 @@
 {% endblock %}
 {% block navbar %}
 <nav>
-    <li><span>{{ g.user['username'] }}</span>
+    <span>{{ g.user['username'] }}</span>
+    <br>
     <a href="{{ url_for('auth.logout') }}">Log Out</a>
     <ul>
         <li><a href="{{ url_for('index.index') }}">Overview</a>
