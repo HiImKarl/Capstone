@@ -1,6 +1,5 @@
 import os
 from flask import Flask
-from flask_bootstrap import Bootstrap
 
 
 def create_app(test_config=None):
@@ -35,5 +34,4 @@ def create_app(test_config=None):
     app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')
 
-    Bootstrap(app)
     return app
