@@ -1,6 +1,11 @@
 source setup
-python -m venv
-source venv/bin/activat .
+
+python -m virtualenv venv 
+
+source venv/bin/activate
+
 pip install -r requirements.txt
+
 flask init-db
+
 flask run
