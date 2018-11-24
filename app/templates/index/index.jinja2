@@ -1,2 +1,8 @@
 {% extends "index/base.jinja2" %}
-{% block content %} Welcome {% endblock %}
+{% block content %} 
+    <div class="jumbotron justify">
+        <h1>Welcome to Money Rocket!</h1>
+        <p>An investment wizard that lets you backtest portfolios, generate new portfolios, and compare your current portfolio to better ones.</p>
+        <p><a class="btn btn-primary btn-lg" href="{{ url_for('index.backtesting') }}" role="button">Start by backtesting your current portfolio!</a></p>
+    </div>
+{% endblock %}

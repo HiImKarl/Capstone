@@ -21,7 +21,7 @@ def register():
         if db.execute(
             'SELECT * FROM User WHERE username = ?', (username, )
         ).fetchone() is not None:
-            error = 'User is already registered'
+            error = 'User is already registered!'
 
         if error is None:
             db.execute(
@@ -50,7 +50,7 @@ def login():
         ).fetchone()
 
         if user is None or not check_password_hash(user['password'], password):
-            error = "Incorrect Username or password"
+            error = "Incorrect Username or Password."
 
         if error is None:
             session.clear()
@@ -78,6 +78,8 @@ def load_logged_in_user():
 @bp.route('logout', methods=('GET', ))
 def logout():
     session.clear()
+    logout_message = "Successfully logged out!"
+    flash(logout_message)
     return redirect(url_for('index'))
 
 

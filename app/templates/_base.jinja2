@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-<img src="{{ url_for('static', filename='assets/logo.jpg') }}" style="width:6%;height:4%">
-{% block navbar %}{% endblock %}
-{% block head %}{% endblock %}
-<section>
-    {% for message in get_flashed_messages() %}
-        <div >{{ message }}</div>
-    {% endfor %}
-</section>
-{% block body %}{% endblock %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<div class = "main">
+    {# <img src="{{ url_for('static', filename='assets/logo.jpg') }}" style="width:6%;height:4%"> #}
+    {% block navbar %}{% endblock %}
+    {% block head %}{% endblock %}
+    <section>
+        {% for message in get_flashed_messages() %}
+            {% if message == "Successfully logged out!" %}
+                <div class = "alert alert-success"> {{ message}} </div>
+                {% else %}
+                <div class = "alert alert-danger">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    </section>
+    {% block body %}{% endblock %}
+</div>
+
+

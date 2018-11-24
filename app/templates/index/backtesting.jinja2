@@ -1,0 +1,62 @@
+{% extends "index/base.jinja2" %}
+{% block content %}
+<div class="dropdown">
+    <script>
+
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        function populate() {
+            var items = [{{session["tickers"]}}]
+            var str = "<ul>";
+            items[0].forEach(function(item){
+                str += '<a>' + item + '</a>';
+            });
+            str += '</ul>';
+            document.getElementById("myDropdown").innerHTML = str;
+        }
+        populate();
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</div>
+
+<div class="container">
+    <div class="col-12 col-md-10 col-lg-8">
+            <form class="card card-sm">
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-search h4 text-body"></i>
+                    </div>
+                    <!--end of col-->
+                    <div class="col">
+                        <input class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search topics or keywords" id="myInput" onkeyup="filterFunction()" onClick = "populate()">
+                    </div>
+                    <!--end of col-->
+                    <div class="col-auto">
+                        <button class="btn btn-lg btn-success" type="submit" onclick = "myFunction()">Show Search Results</button>
+                    </div>
+                    <!--end of col-->
+                </div>
+            </form>
+        </div>
+        <!--end of col-->
+    </div>
+    <div id="myDropdown" class="dropdown-content">   
+    </div>
+</div>
+
+
+{% endblock %}
