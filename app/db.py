@@ -59,9 +59,6 @@ def init_db():
 
     xcoefficients = ff3_ols(xreturns, xfactors, xrisk_free)
 
-    print(xcoefficients.shape)
-    print(xcoefficients)
-
     xff_returns = ff3_return_estimates(xreturns, xfactors, xrisk_free, xcoefficients)
     xff_covariances = ff3_cov_est(xreturns, xfactors, xcoefficients)
 

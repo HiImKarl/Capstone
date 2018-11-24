@@ -7,9 +7,9 @@
 {% block content %}
     <form method="post">
         <dl>
-            {{ render_field(form.username) }}
+            {{ render_field(form.username) }}<br>
             {{ render_field(form.password) }}
         </dl>
-        <p><input type="submit" value="Sign Up"></p>
+        <p><input type="submit" class="btn btn-primary" value="Sign Up"></p>
     </form>
 {% endblock %}

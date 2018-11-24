@@ -1,15 +1,16 @@
 {% extends "auth/base.jinja2" %}
 {% from "_form.jinja2" import render_field %}
 {% block head %}
-    <h2>{% block title %}Log In{% endblock %}</h1>
+    <h2>{% block title %}Log In{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
     <form method="post">
         <dl>
-            {{ render_field(form.username) }}
+            {{ render_field(form.username) }}<br>
             {{ render_field(form.password) }}
         </dl>
         <p><input type="submit" class="btn btn-primary" value="Log In"></p>
     </form>
 {% endblock %}
+
