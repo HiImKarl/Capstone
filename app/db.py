@@ -70,8 +70,8 @@ def init_db():
     assert(len(ff_covariances[0]) == len(STOCK_TICKERS))
 
     db.executemany(
-        'INSERT INTO Asset (ticker, average_return) VALUES (?, ?)',
-        zip(STOCK_TICKERS, ff_returns)
+        'INSERT INTO Asset (ticker, average_return, price) VALUES (?, ?, ?)',
+        zip(STOCK_TICKERS, ff_returns, [value[-1] for key, value in prices.items()])
     )
 
     for i in range(len(xff_covariances)):

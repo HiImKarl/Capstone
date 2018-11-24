@@ -15,7 +15,8 @@ CREATE TABLE User (
 
 CREATE TABLE Asset (
   ticker TEXT PRIMARY KEY,
-  average_return REAL NOT NULL
+  average_return REAL NOT NULL,
+  price REAL NOT NULL
 );
 
 CREATE TABLE Covariance (
