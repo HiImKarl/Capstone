@@ -1,5 +1,8 @@
 {% extends "auth/base.jinja2" %}
 {% from "_form.jinja2" import render_field %}
+{% block imports %}
+    <script src="{{ url_for('static', filename='js/example.js') }}"></script>
+{% endblock %}
 {% block head %}
     <h2 class = "base">{% block title %}Log In{% endblock %}</h2>
 {% endblock %}
@@ -12,5 +15,6 @@
         </dl>
         <p><input type="submit" class="btn btn-primary" value="Log In"></p>
     </form>
+    <button onclick="f();">Hello</button>
 {% endblock %}
 
