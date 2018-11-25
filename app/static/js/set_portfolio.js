@@ -110,5 +110,8 @@ function reset(){
 };
 
 function submit(){
-    alert("Successfully submitted and saved portfolio!");
+    let data = how_many;
+    $.post("/set_portfolio", how_many, function(){
+        console.log("successfully saved portfolio")
+    });
 }
