@@ -1,9 +1,11 @@
 {% extends "auth/base.jinja2" %}
 {% from "_form.jinja2" import render_field %}
 {% block imports %}
-    <script src="{{ url_for('static', filename='js/example.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
 {% block content %}
+
+
 <form class="text-center border border-light p-5" method = "post" style = "border: 0 !important;">
     <p class="h3 mb-4">Sign in</p>
 
@@ -44,5 +46,13 @@
         <i class="fa fa-github"></i>
     </a>
 </form>
+    <script>
+        function f(data) {
+            alert(data['tickers']);
+            alert(data['prices']);
+        }
+    </script>
+
+    <button onclick="$.getJSON('{{ url_for('api.assets') }}', f)">CLICK ME</button>
 {% endblock %}
 
