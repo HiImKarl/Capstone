@@ -2,6 +2,15 @@
 {% block content %}
 {% block imports %}
 <script src = "{{url_for('static', filename='js/dropdown.js')}}"></script>
+<script>
+window.addEventListener('load', function(){
+    var tickers = {{session['tickers']}};
+    var prices = {{session['prices']}}
+    for (var i = 0; i < tickers.length; i++){
+        stock_data[tickers[i]] = {'price': prices[i], 'amount': 0};
+    }
+})
+ </script>
 {% endblock %}
 
 {# <div class="col-12 col-md-10 col-lg-8">
@@ -20,14 +29,14 @@
         </form>
     </div> #}
     <!--end of col-->
+
     <div>
         <i class="fas fa-search h4 text-body middle omega"></i>
-        <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" type="search" autocomplete = "off" placeholder="Search for stock ticker" id="myInput" onkeyup="filterFunction({{session['tickers']}})">
+        <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" type="search" autocomplete = "off" placeholder="Search for stock ticker" id="myInput" onkeyup="filterFunction()">
     </div>    
     <div id="myDropdown" class="dropdown-content">   
     </div>
 </div>
-
 
 <div id = "portfolio">
 </div>

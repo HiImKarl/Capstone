@@ -1,34 +1,39 @@
 
-var dropdown = [];
+var curr_selected = [];
+var stock_data = {};
 var seen = {};
-var curritems = [];
-var currList = []
+var how_many = {};
 
+// #stock data is our stock-> prices map
 function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
 }
 
-function populate(items) {
+function populate() {
     if (!document.getElementById('myInput').value){
         document.getElementById("myDropdown").innerHTML = '';
         return
     };
-    curritems = items;
+
     dropdown = '';
     dropdown += "<ul class = 'list-group'>";
-    items.sort();
-    items.forEach(function(item){
-        if (!seen.hasOwnProperty(item)){
-            dropdown += "<li class = 'list-group list-group-item hover' onClick = \"addStock('"+item.toString()+"')\">" + item + '</li>';
+    for (var ticker in stock_data) {
+        if (stock_data.hasOwnProperty(ticker)) {
+
+            if (!seen.hasOwnProperty(ticker)){
+                dropdown += "<li class = 'list-group list-group-item hover' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>';
+            }
         }
-    });
+    }
+    
     dropdown += '</ul>';
     var argsString = Array.prototype.join.call(dropdown, "");
+
     document.getElementById("myDropdown").innerHTML = argsString;
 };
 
-function filterFunction(items) {
-    populate(items);
+function filterFunction() {
+    populate();
     var input, filter, ul, li, a, i;
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
@@ -44,14 +49,28 @@ function filterFunction(items) {
 }
 
 function addStock(item) {
-    var hello = "<div class = 'stock' ><span class='delete'>×</span><h2>" + item + "</h2><h1> '...' </h1><h3> % </h3></div>";
-    currList += hello;
+    curr_selected.push(item);
     seen[item] = '';
-    var argsString = Array.prototype.join.call(currList, "");
+    var to_show = []
+    for (var i = 0; i < curr_selected.length; i++){
+        to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='text' placeholder = '# shares' onKeyUp= 'updateAmount(this, \""+curr_selected[i].toString()+"\")'></div>" );    
+    };
+
+    var argsString = Array.prototype.join.call(to_show, "");
+    console.log(argsString);
     document.getElementById("portfolio").innerHTML = argsString;
-    populate(curritems);
+    filterFunction();
 }
 
 function removeStock(item){
-
+    var idx = curr_selected.indexOf(item);
+    curr_selected.splice(idx, 1);
+    delete seen[item];
+    var to_show = []
+    for (var i = 0; i < curr_selected.length; i++){
+        to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='text' placeholder = '# shares' onKeyUp= 'updateAmount(this, \""+curr_selected[i].toString()+"\")'></div>" );
+    }
+    var argsString = Array.prototype.join.call(to_show, "");
+    document.getElementById("portfolio").innerHTML = argsString;
+    filterFunction();
 };
