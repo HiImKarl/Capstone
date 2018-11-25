@@ -1,13 +1,17 @@
 
 var curr_selected = [];
-var stock_data = {};
 var seen = {};
 var how_many = {};
+var stock_data = {};
 
-function f(data, stock_data) {
-    stock_data = data;
-};
-$.getJSON('/api/assets', f);
+$.getJSON('/api/assets', function(data) {
+    let tickers = data['tickers'];
+    let prices = data['prices'];
+    for (let i = 0; i < tickers.length; ++i) {
+        stock_data[tickers[i]] = {"price": prices[i]}
+        how_many[tickers[i]] = 0;
+    };
+});
 
 // #stock data is our stock-> prices map
 function myFunction() {

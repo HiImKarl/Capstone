@@ -1,17 +1,6 @@
 {% extends "index/base.jinja2" %}
 {% block content %}
 {% block imports %}
-{# <script>
-window.addEventListener('load', function(){
-    var tickers = {{session['tickers']}};
-    var prices = {{session['prices']}}
-    for (var i = 0; i < tickers.length; i++){
-        stock_data[tickers[i]] = {'price': prices[i], 'amount': 0};
-        how_many[tickers[i]] = 0;
-    }
-
-})
- </script> #}
  <script src = "{{url_for('static', filename='js/back_testing.js')}}"></script>
 {% endblock %}
 
@@ -74,7 +63,7 @@ window.addEventListener('load', function(){
     <div style = "margin-bottom: 12px;">
         <input type="text" name="daterange" class = "huh" placeholder = "Click here to select a range of dates to backtest from!" />
     </div>
-    <a href="{{url_for('index.portfolios')}}" class="btn btn-info">Edit Portfolio</a>
+    <a href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
 
     {# pass in scoped current portfolio along with time window from input to backtest #}
     <a onclick = "backtest()" class="btn btn-success">Backtest this portfolio on the chosen time interval</a>

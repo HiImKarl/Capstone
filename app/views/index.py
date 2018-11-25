@@ -29,10 +29,10 @@ def tutorial():
 def preferences():
     return render_template('index/preferences.jinja2')
 
-@bp.route('/portfolios', methods=('GET', 'POST'))
+@bp.route('/set_portfolio', methods=('GET', 'POST'))
 @login_required
-def portfolios():
-    return render_template('index/portfolios.jinja2')
+def set_portfolio():
+    return render_template('index/set_portfolio.jinja2')
 
 @bp.route('/generate_better', methods=('GET', 'POST'))
 @login_required
