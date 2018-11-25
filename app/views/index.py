@@ -36,7 +36,10 @@ def preferences():
 def portfolios():
     return render_template('index/portfolios.jinja2')
 
-
+@bp.route('/generate_better', methods=('GET', 'POST'))
+@login_required
+def generate_better():
+    return render_template('index/generate_better.jinja2')
 
 
 @bp.before_request

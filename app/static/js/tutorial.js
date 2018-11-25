@@ -4,7 +4,6 @@ window.onload = function () {
     var button = document.getElementsByClassName("btn-one")[0]
     button.style.display = "block";
 
-    console.log('ended');
   }
 };
 
