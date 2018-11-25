@@ -1,15 +1,44 @@
 {% extends "auth/base.jinja2" %}
 {% from "_form.jinja2" import render_field %}
-{% block head %}
-    <h1 class = "base" style = "margin: 0 10px 10px 10px;">{% block title %}Register{% endblock %}</h1>
-{% endblock %}
 
 {% block content %}
-    <form method="post">
-        <dl>
-            {{ render_field(form.username) }}<br>
-            {{ render_field(form.password) }}
-        </dl>
-        <p><input type="submit" class="btn btn-primary" value="Sign Up"></p>
-    </form>
+
+<form class="text-center border border-light p-5" method = "post" style = "border: 0 !important;">
+    <p class="h3 mb-4">Sign up</p>
+    <dl>
+        {{ render_field(form.username) }}<br>
+        {{ render_field(form.password) }}
+    </dl>
+
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="defaultRegisterFormNewsletter">
+        <label class="custom-control-label" for="defaultRegisterFormNewsletter">Subscribe to our newsletter</label>
+    </div>
+
+    <button class="btn btn-info my-4 btn-block" type="submit">Sign in</button>
+
+    <p>or sign up with:</p>
+
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-facebook"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-twitter"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-linkedin"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-github"></i>
+    </a>
+
+    <hr>
+
+    <!-- Terms of service -->
+    <p>By clicking
+        <em>Sign up</em> you agree to our
+        <a href="" target="_blank">terms of service</a> and
+        <a href="" target="_blank">terms of service</a>. </p>
+</form>
+<!-- Default form register -->
 {% endblock %}

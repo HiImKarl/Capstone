@@ -5,17 +5,17 @@
 {% endblock %}
 {% block navbar %}
 <nav class="main navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 10px;">
-  <a class="navbar-brand" href="#"><i class="fas fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
+  <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
+      <li class="nav-item" style = "margin-right: 5px;">
         <a class="nav-link" href="{{ url_for('index') }}">Overview <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" style = "margin-right: 5px;">
         <a class="nav-link" href="{{ url_for('index.portfolios') }}">Set up your portfolio</a>
       </li>
       <li class="nav-item dropdown">
@@ -29,8 +29,15 @@
           <a class="dropdown-item" href="#">Generate a Portfolio with a certain return</a>
         </div>
       </li>
-      <li class="nav-item">
-        <button class="btn btn-danger btn-sm" href="{{ url_for('auth.logout') }}">Log out</a>
+       <li class="nav-item" style = "margin-right: 5px;">
+        <a href="{{ url_for('index.help') }}">
+            <button class="btn btn-success btn-sm" > Tutorial</button>
+        </a> 
+      </li>
+      <li class="nav-item" style = "margin-right: 5px;">
+        <a href="{{ url_for('auth.logout') }}">
+            <button class="btn btn-danger btn-sm" >Log out</button>
+        </a> 
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">

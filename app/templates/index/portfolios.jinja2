@@ -8,39 +8,27 @@ window.addEventListener('load', function(){
     var prices = {{session['prices']}}
     for (var i = 0; i < tickers.length; i++){
         stock_data[tickers[i]] = {'price': prices[i], 'amount': 0};
+        how_many[tickers[i]] = 0;
     }
+
 })
  </script>
 {% endblock %}
-
-{# <div class="col-12 col-md-10 col-lg-8">
-        <form class="card card-sm">
-            <div class="card-body">
-                <div class="col-auto">
-                    <i class="fas fa-search h4 text-body"></i>
-                    <span> Search for a stock ticker </span>
-                </div>
-                <!--end of col-->
-                <span class="col">
-                    
-                </span>
-                <!--end of col-->
-            </div>
-        </form>
-    </div> #}
-    <!--end of col-->
-
-<div style= "margin-top: 20px">
-    <i class="fas fa-search h4 text-body middle omega"></i>
-    <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" type="search" autocomplete = "off" placeholder="Search for stock ticker" id="myInput" onkeyup="filterFunction()">
+<div class = 'center'>
+<img style = "margin: 0 auto; width: 20%; display: inline-block; "src="{{url_for('static', filename='assets/money.png')}}">
+<img style = "vertical-align: top" src ="{{url_for('static', filename='assets/info.gif')}}">
+</div>
+<div class="input-group mb-3" style = "margin-top: 5px">
+    <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" style = "background-color: white" type="search" autocomplete = "off" placeholder="Search for a stock ticker i.e. AMZN" id="myInput" onkeyup="filterFunction()">
 </div>    
 <div id="myDropdown" class="dropdown-content">   
 </div>
+
 <div class="card text-center">
   <div class="card-header bg-light">
   </div>
   <div class="card-body">
-    <h5 class="card-title">Your Current Portfolio of Assets</h5>
+    <h3 class="card-title">Your Current Portfolio of Assets</h3>
     <div id = "portfolio">
     </div>
     <a href="#" onClick = "submit()" class="btn btn-success">Submit Portfolio</a>
@@ -49,5 +37,4 @@ window.addEventListener('load', function(){
   <div class="card-footer text-muted">
   </div>
 </div>
-
 {% endblock %}

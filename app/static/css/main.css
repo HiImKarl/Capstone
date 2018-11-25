@@ -9,6 +9,9 @@
     animation: fadein 0.5s;
 }
 
+.huh {
+    background-color: white !important;
+}
 body {
     background-color: #dbedff;
 }
@@ -50,9 +53,8 @@ body {
 .right {
     float: right;
 }
-
-.alert {
-    margin: 0 10px;
+.alert{
+    margin-top: 5px;
 }
 
 .justify {
@@ -86,15 +88,24 @@ body {
     padding-bottom: 11px;
     margin-right: 10px;
 }
+
 #myInput {
     background-image: url('/css/searchicon.png'); 
     background-position: 10px 12px; 
     background-repeat: no-repeat; 
     width: 80%; 
     font-size: 16px;
+    margin-left: 5%;
+    margin-right: 5%;
     padding: 12px 20px 12px 12px; 
     border: 1px solid #ddd; 
-    margin-bottom: 12px; 
+}
+
+.center {
+    text-align: center;
+}
+.card:hover {
+    box-shadow:9px 9px 7px #08080833;
 }
 #myDropdown {
     margin-bottom: 12px;
@@ -109,7 +120,11 @@ input {
 
 .hover {
    margin-left: 10px; 
+   transition: 0.3s;
+}
 
+.hover:hover{
+    background-color: #deffda;
 }
 
 hr.divider {

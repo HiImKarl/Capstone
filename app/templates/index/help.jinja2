@@ -1,0 +1,45 @@
+{% extends "index/base.jinja2" %}
+{% block content %}
+{% block imports %}
+<script src = "{{url_for('static', filename='js/help.js')}}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index/help.css') }}">
+{% endblock %}
+<div class="steps">
+  <div class="step">
+    <div class="step-header">
+      <div class="header">Welcome to the Money Rocket Tutorial. </div>
+      <div class="subheader">Start by constructing your Portfolio and saving it. For tips to construct a portfolio, see our finance help page from the home page.</div>
+    </div>
+    <div class="step-content one">
+      <button class="next-btn">Next</button>
+    </div>
+  </div>
+  <div class="step minimized">
+    <div class="step-header">
+      <div class="header">Portfolio Constructed and saved! </div>
+      <div class="subheader">Now that our portfolio is set, we are ready to backtest our Portfolio.</div>
+    </div>
+    <div class="step-content two">
+      <button class="next-btn">Next</button>
+    </div>
+  </div>
+  <div class="step minimized">
+    <div class="step-header">
+      <div class="header">Let's generate a portfolio which beats our current one.</div>
+      <div class="subheader">We can choose a time range to test our portfolios on.</div>
+    </div>
+    <div class="step-content three">
+      <button class="next-btn">Next</button>
+    </div>
+  </div>
+  <div class="step minimized">
+    <div class="step-header">
+      <div class="header">Finally, we can try and generate a completely new portfolio.</div>
+      <div class="subheader">This portfolio will have the lowest variance, and a target return on a time period .</div>
+    </div>
+    <div class="step-content four">
+      <button class="close-btn">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

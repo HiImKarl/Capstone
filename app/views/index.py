@@ -21,6 +21,10 @@ def index():
 def backtesting():
     return render_template('index/backtesting.jinja2')
 
+@bp.route('/help')
+@login_required
+def help():
+    return render_template('index/help.jinja2')
 
 @bp.route('/preferences', methods=('GET', 'POST'))
 @login_required
@@ -32,6 +36,8 @@ def preferences():
 @login_required
 def portfolios():
     return render_template('index/portfolios.jinja2')
+
+
 
 
 @bp.before_request

@@ -19,7 +19,6 @@ function populate() {
     dropdown += "<ul class = 'list-group'>";
     for (var ticker in stock_data) {
         if (stock_data.hasOwnProperty(ticker)) {
-
             if (!seen.hasOwnProperty(ticker)){
                 dropdown += "<li class = 'list-group list-group-item hover' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>';
             }
@@ -53,7 +52,12 @@ function addStock(item) {
     seen[item] = '';
     var to_show = []
     for (var i = 0; i < curr_selected.length; i++){
-        to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='text' placeholder = '# shares' onKeyUp= 'updateAmount(this, \""+curr_selected[i].toString()+"\")'></div>" );    
+        if (how_many[curr_selected[i]] == 0 ){
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );    
+        } else {
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+        }
+
     };
 
     var argsString = Array.prototype.join.call(to_show, "");
@@ -67,13 +71,21 @@ function removeStock(item){
     delete seen[item];
     var to_show = []
     for (var i = 0; i < curr_selected.length; i++){
-        to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='text' placeholder = '# shares' onKeyUp= 'updateAmount(this, \""+curr_selected[i].toString()+"\")'></div>" );
+        if (how_many[curr_selected[i]] == 0 ){
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+        } else {
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+        }
     }
     var argsString = Array.prototype.join.call(to_show, "");
     document.getElementById("portfolio").innerHTML = argsString;
     filterFunction();
 };
 
+function updateAmount(value, ticker){
+    how_many[ticker] = parseFloat(value);
+    console.log(how_many)
+}
 function reset(){
     if (confirm('Are you sure you want to rest your current Portfolio?')) {
         seen = {};

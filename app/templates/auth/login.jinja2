@@ -3,17 +3,46 @@
 {% block imports %}
     <script src="{{ url_for('static', filename='js/example.js') }}"></script>
 {% endblock %}
-{% block head %}
-    <h1 class = "base" style = "margin: 0 10px 10px 10px;">{% block title %}Log In{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
-    <form method="post">
-        <dl>
-            {{ render_field(form.username) }}<br>
-            {{ render_field(form.password) }}
-        </dl>
-        <p><input type="submit" class="btn btn-primary" value="Log In"></p>
-    </form>
+<form class="text-center border border-light p-5" method = "post" style = "border: 0 !important;">
+    <p class="h3 mb-4">Sign in</p>
+
+    <dl>
+        {{ render_field(form.username) }}<br>
+        {{ render_field(form.password) }}
+    </dl>
+
+    <div class="d-flex justify-content-around">
+        <div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
+                <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
+            </div>
+        </div>
+        <div>
+            <a href="">Forgot password?</a>
+        </div>
+    </div>
+
+    <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+
+    <p>Not a member?
+        <a href="{{ url_for('auth.register') }}">Register</a>
+    </p>
+    <p>or sign in with:</p>
+
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-facebook"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-twitter"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-linkedin"></i>
+    </a>
+    <a type="button" class="light-blue-text mx-2">
+        <i class="fa fa-github"></i>
+    </a>
+</form>
 {% endblock %}
 
