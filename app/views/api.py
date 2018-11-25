@@ -4,9 +4,7 @@ from flask import (
 from app.db import get_db
 from app.data import STOCK_TICKERS
 
-
 bp = Blueprint('api', __name__, url_prefix='/api')
-
 
 @bp.route('/assets', methods=('GET', ))
 def assets():

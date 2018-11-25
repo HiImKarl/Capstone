@@ -2,17 +2,6 @@
 {% block content %}
 {% block imports %}
 <script src = "{{url_for('static', filename='js/dropdown.js')}}"></script>
-<script>
-window.addEventListener('load', function(){
-    var tickers = {{session['tickers']}};
-    var prices = {{session['prices']}}
-    for (var i = 0; i < tickers.length; i++){
-        stock_data[tickers[i]] = {'price': prices[i], 'amount': 0};
-        how_many[tickers[i]] = 0;
-    }
-
-})
- </script>
 {% endblock %}
 <div class = 'center'>
 <img style = "margin: 0 auto; width: 20%; display: inline-block; "src="{{url_for('static', filename='assets/money.png')}}">

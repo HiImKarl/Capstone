@@ -4,6 +4,11 @@ var stock_data = {};
 var seen = {};
 var how_many = {};
 
+function f(data, stock_data) {
+    stock_data = data;
+};
+$.getJSON('/api/assets', f);
+
 // #stock data is our stock-> prices map
 function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
