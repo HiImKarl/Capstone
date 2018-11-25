@@ -23,7 +23,7 @@ def bl_pi(mkt_cap, mu, q, rf):
     return rav_coeff * np.matmul(q, x_mkt)
 
 
-# helper function for view gen
+# tutorialer function for view gen
 def in_flags(flags, flags_i):
     for i in range(len(flags)):
         if flags[i] == flags_i:
@@ -115,7 +115,7 @@ def view_gen(stocks, mu, k, mkt_cap,  type = 0):
                     asset = (asset + 1)%stocks
                 flags_i[asset] = True
                 assets.append(asset)
-            # use helper function here
+            # use tutorialer function here
             # keep repeating the asset generation step until it is not a duplicate:
             while in_flags(flags, flags_i):
                 # number of assets to form compound view on

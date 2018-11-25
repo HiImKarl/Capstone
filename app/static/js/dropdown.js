@@ -15,20 +15,19 @@ function populate() {
         return
     };
 
-    dropdown = '';
-    dropdown += "<ul class = 'list-group'>";
+    dropdown = "<ul class = 'list-group'>";
+    var middle = [];
     for (var ticker in stock_data) {
         if (stock_data.hasOwnProperty(ticker)) {
             if (!seen.hasOwnProperty(ticker)){
-                dropdown += "<li class = 'list-group list-group-item hover' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>';
+                middle.push("<li class = 'list-group list-group-item hover' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>');
             }
         }
     }
     
-    dropdown += '</ul>';
-    var argsString = Array.prototype.join.call(dropdown, "");
-
-    document.getElementById("myDropdown").innerHTML = argsString;
+    middle.sort()
+    argsString = dropdown + middle.join('') + '</ul>';
+    document.getElementById("myDropdown").innerHTML =argsString;
 };
 
 function filterFunction() {
@@ -59,7 +58,7 @@ function addStock(item) {
         }
 
     };
-
+    to_show.sort();
     var argsString = Array.prototype.join.call(to_show, "");
     document.getElementById("portfolio").innerHTML = argsString;
     filterFunction();
@@ -69,6 +68,7 @@ function removeStock(item){
     var idx = curr_selected.indexOf(item);
     curr_selected.splice(idx, 1);
     delete seen[item];
+    how_many[item] = 0;
     var to_show = []
     for (var i = 0; i < curr_selected.length; i++){
         if (how_many[curr_selected[i]] == 0 ){
@@ -77,6 +77,7 @@ function removeStock(item){
             to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
         }
     }
+    to_show.sort();
     var argsString = Array.prototype.join.call(to_show, "");
     document.getElementById("portfolio").innerHTML = argsString;
     filterFunction();
@@ -84,12 +85,14 @@ function removeStock(item){
 
 function updateAmount(value, ticker){
     how_many[ticker] = parseFloat(value);
-    console.log(how_many)
 }
 function reset(){
-    if (confirm('Are you sure you want to rest your current Portfolio?')) {
+    if (confirm('Are you sure you want to reset your current Portfolio?')) {
         seen = {};
         curr_selected = [];
+        for (ticker in how_many){
+            how_many[ticker] = 0;
+        }
         document.getElementById("portfolio").innerHTML = '';
         document.getElementById("myDropdown").innerHTML = '';
     } else {

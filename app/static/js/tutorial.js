@@ -1,8 +1,16 @@
-let curOpen;
+window.onload = function () {
+  var video = document.getElementsByTagName('video')[0];
+  video.onended = function(e) {
+    var button = document.getElementsByClassName("btn-one")[0]
+    button.style.display = "block";
 
+    console.log('ended');
+  }
+};
+
+var curOpen;
 $(document).ready(function() {
   curOpen = $('.step')[0];
-  
   $('.next-btn').on('click', function() {
     let cur = $(this).closest('.step');
     let next = $(cur).next();

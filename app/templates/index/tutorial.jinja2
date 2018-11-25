@@ -1,17 +1,20 @@
 {% extends "index/base.jinja2" %}
 {% block content %}
 {% block imports %}
-<script src = "{{url_for('static', filename='js/help.js')}}"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index/help.css') }}">
+<script src = "{{url_for('static', filename='js/tutorial.js')}}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index/tutorial.css') }}">
 {% endblock %}
 <div class="steps">
   <div class="step">
     <div class="step-header">
       <div class="header">Welcome to the Money Rocket Tutorial. </div>
-      <div class="subheader">Start by constructing your Portfolio and saving it. For tips to construct a portfolio, see our finance help page from the home page.</div>
+      <div class="subheader">Start by constructing your Portfolio and saving it. For tips to construct a portfolio, see our finance tutorial page from the home page.</div>
     </div>
     <div class="step-content one">
-      <button class="next-btn">Next</button>
+      <video id = "vid1" height = "460px" width = "100%" controls>
+        <source src="{{ url_for('static', filename = 'assets/tut1.mp4')}}" type="video/mp4">
+      </video>
+      <button class="next-btn btn-one">Next</button>
     </div>
   </div>
   <div class="step minimized">

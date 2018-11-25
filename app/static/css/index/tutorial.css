@@ -76,6 +76,9 @@ transition: background-color 0.3s ease-in-out;
 cursor: pointer;
 }
 
+.btn-one {
+    display: none;
+}
 .header {
 user-select: none;
 color: rgba(0, 0, 0, 0.6);
@@ -120,6 +123,7 @@ background-color: rgba(0, 0, 0, 0.05);
 border-radius: 4px;
 margin-top: 10px;
 }
+
 .step-content.four {
     height: 400px;
     width: 100%;

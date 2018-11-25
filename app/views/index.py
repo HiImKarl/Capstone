@@ -15,16 +15,15 @@ bp = Blueprint('index', __name__)
 def index():
     return render_template('index/index.jinja2')
 
-
 @bp.route('/backtesting')
 @login_required
 def backtesting():
     return render_template('index/backtesting.jinja2')
 
-@bp.route('/help')
+@bp.route('/tutorial')
 @login_required
-def help():
-    return render_template('index/help.jinja2')
+def tutorial():
+    return render_template('index/tutorial.jinja2')
 
 @bp.route('/preferences', methods=('GET', 'POST'))
 @login_required
