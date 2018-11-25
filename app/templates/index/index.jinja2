@@ -1,8 +1,50 @@
 {% extends "index/base.jinja2" %}
 {% block content %} 
-    <div class="jumbotron justify">
-        <h1>Welcome to Money Rocket!</h1>
-        <p>An investment wizard that lets you backtest portfolios, generate new portfolios, and compare your current portfolio to better ones.</p>
-        <p><a class="btn btn-primary btn-lg" href="{{ url_for('index.backtesting') }}" role="button">Start by backtesting your current portfolio!</a></p>
+<div class="card border-primary mb-4 text-center hoverable" style = "margin-bottom: 15px !important; padding: 20px 0;">
+     <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 text-left ml-3 mt-3" style = "margin-left: 50px" >
+                <h4 class="mb-4" style = "font-weight: bold">Welcome to Money Rocket</h4>
+                <p>An investment wizard that lets you backtest portfolios, generate new portfolios, and compare your current portfolio to better ones. Don't worry if you don't know anything about finance, we're here to guide you to make money. Click below to get started by making your first portfolio, and click the help link if you're ever lost!</p>
+                <hr class="my-4">
+                <p><a class="btn btn-primary btn-lg" href="{{ url_for('index.backtesting') }}" role="button">Click here to set up your first portfolio!</a></p>
+            </div>
+            <div class="col-md-5 offset-md-1 mx-3 my-3" >
+                <div class="view overlay hm-white-slight">
+                    <img style = "float:right; width = 200px;"src="{{url_for('static', filename='assets/money.png')}}" class="img-fluid" alt="Sample image for first version of blog listing">
+                    <a>
+                        <div class="mask"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<div class="card border-primary mb-4 text-center hoverable">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 offset-md-1 mx-3 my-3">
+                <div class="view overlay hm-white-slight">
+                    <img src="{{url_for('static', filename='assets/preview.jpg')}}" class="img-fluid" alt="Sample image for first version of blog listing">
+                    <a>
+                        <div class="mask"></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 text-left ml-3 mt-3" style = "margin-top: 50px !important;">
+                <a href="" class="green-text">
+                    <h6 class="font-bold pb-1"><i class="fa fa-desktop"></i> Money Rocket</h6>
+                </a>
+                <h4 class="mb-4"><strong>Portfolio Generation has never been so easy</strong></h4>
+                <p>We at Money Rocket believe in Roy Kwon. In fact, we would go so far as to say Roy Kwon is our idol. We even made this entire website to show our
+                dedication to the MSF program. Just amazing how low we would stoop just to pass a course. Click the link below to follow our journey as we develop
+                this amazing website. </p>
+                <p>by <a><strong>Money Rocket</strong></a>, 69/69/1969</p>
+                <a class="btn btn-success">Read more</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

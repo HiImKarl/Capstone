@@ -1,3 +1,6 @@
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.3/css/mdb.min.css);
+
 .main {
     -webkit-animation: fadein 0.5s; /* Safari, Chrome and Opera > 12.1 */
     -moz-animation: fadein 0.5s; /* Firefox < 16 */
@@ -62,12 +65,13 @@ body {
 	position: relative;
 	display: inline-block;
 	width: 15%;
-	padding: 20px 10px;
-	margin: 10px;
+    padding: 20px 10px;
+    margin: 10px;
 	background-color: #FFF;
 	border-radius: 3px;
     box-shadow: 0 1px 5px rgba(0,0,0,0.3);
     font-weight: lighter;
+    text-align: left !important;
 }
 .hover {
     cursor: pointer;
@@ -83,42 +87,42 @@ body {
     margin-right: 10px;
 }
 #myInput {
-    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
-    background-position: 10px 12px; /* Position the search icon */
-    background-repeat: no-repeat; /* Do not repeat the icon image */
-    width: 80%; /* Full-width */
-    font-size: 16px; /* Increase font-size */
-    padding: 12px 20px 12px 12px; /* Add some padding */
-    border: 1px solid #ddd; /* Add a grey border */
-    margin-bottom: 12px; /* Add some space below the input */
+    background-image: url('/css/searchicon.png'); 
+    background-position: 10px 12px; 
+    background-repeat: no-repeat; 
+    width: 80%; 
+    font-size: 16px;
+    padding: 12px 20px 12px 12px; 
+    border: 1px solid #ddd; 
+    margin-bottom: 12px; 
 }
-
-#myUL {
-    /* Remove default list styling */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+#myDropdown {
+    margin-bottom: 12px;
 }
-
-#myUL li a {
-    border: 1px solid #ddd; /* Add a border to all links */
-    margin-top: -1px; /* Prevent double borders */
-    background-color: #f6f6f6; /* Grey background color */
-    padding: 12px; /* Add some padding */
-    text-decoration: none; /* Remove default text underline */
-    font-size: 18px; /* Increase the font-size */
-    color: black; /* Add a black text color */
-    display: block; /* Make it into a block element to fill the whole list */
-}
-
-#myUL li a:hover:not(.header) {
-    background-color: #eee; /* Add a hover effect to all links, except for headers */
-}
-
 .close {
     margin-right: 10px;
 }
 
 input {
     width: 60%;
+}
+
+.hover {
+   margin-left: 10px; 
+
+}
+
+hr.divider {
+	border: 0.5px solid gray;
+}
+
+#portfolio {
+    margin-bottom: 0.75rem;
+}
+
+.hm-gradient {
+    background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+}
+.darken-grey-text {
+    color: #2E2E2E;
 }

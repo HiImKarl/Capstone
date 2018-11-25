@@ -30,15 +30,25 @@ window.addEventListener('load', function(){
     </div> #}
     <!--end of col-->
 
-    <div>
-        <i class="fas fa-search h4 text-body middle omega"></i>
-        <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" type="search" autocomplete = "off" placeholder="Search for stock ticker" id="myInput" onkeyup="filterFunction()">
-    </div>    
-    <div id="myDropdown" class="dropdown-content">   
-    </div>
+<div style= "margin-top: 15px">
+    <i class="fas fa-search h4 text-body middle omega"></i>
+    <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" type="search" autocomplete = "off" placeholder="Search for stock ticker" id="myInput" onkeyup="filterFunction()">
+</div>    
+<div id="myDropdown" class="dropdown-content">   
 </div>
 
-<div id = "portfolio">
+<div class="card text-center">
+  <div class="card-header bg-light">
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Your Current Portfolio of Assets</h5>
+    <div id = "portfolio">
+    </div>
+    <a href="#" onClick = "submit()" class="btn btn-success">Submit Portfolio</a>
+    <a href="#" onClick = "reset()" class="btn btn-danger">Reset Portfolio</a>
+  </div>
+  <div class="card-footer text-muted">
+  </div>
 </div>
 
 {% endblock %}

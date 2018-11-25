@@ -57,7 +57,6 @@ function addStock(item) {
     };
 
     var argsString = Array.prototype.join.call(to_show, "");
-    console.log(argsString);
     document.getElementById("portfolio").innerHTML = argsString;
     filterFunction();
 }
@@ -74,3 +73,18 @@ function removeStock(item){
     document.getElementById("portfolio").innerHTML = argsString;
     filterFunction();
 };
+
+function reset(){
+    if (confirm('Are you sure you want to rest your current Portfolio?')) {
+        seen = {};
+        curr_selected = [];
+        document.getElementById("portfolio").innerHTML = '';
+        document.getElementById("myDropdown").innerHTML = '';
+    } else {
+        pass
+    }
+};
+
+function submit(){
+    alert("Successfully submitted and saved portfolio!");
+}
