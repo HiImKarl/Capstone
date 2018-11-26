@@ -95,23 +95,25 @@ function removeStock(item){
 function updateAmount(value, ticker){
     how_many[ticker] = parseFloat(value);
 }
-function reset(){
+
+function reset() {
     if (confirm('Are you sure you want to reset your current Portfolio?')) {
         seen = {};
         curr_selected = [];
-        for (ticker in how_many){
+        for (let ticker in how_many){
             how_many[ticker] = 0;
         }
         document.getElementById("portfolio").innerHTML = '';
         document.getElementById("myDropdown").innerHTML = '';
-    } else {
-        pass
     }
-};
+}
 
-function submit(){
-    let data = how_many;
-    $.post("/set_portfolio", how_many, function(){
-        console.log("successfully saved portfolio")
+function submit() {
+    $.ajax("/set_portfolio", {
+        data: JSON.stringify(how_many),
+        contentType: 'application/json',
+        type: 'post',
+        dataType: 'json',
+        async: true,
     });
 }

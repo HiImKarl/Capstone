@@ -6,6 +6,7 @@ from app.data import STOCK_TICKERS
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
+
 @bp.route('/assets', methods=('GET', ))
 def assets():
     prices = []
@@ -16,8 +17,6 @@ def assets():
         ).fetchone()
         prices.append(price['price'])
 
-    print(STOCK_TICKERS)
-    print(prices)
     return jsonify(
         tickers=STOCK_TICKERS,
         prices=prices
