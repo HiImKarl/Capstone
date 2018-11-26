@@ -4,12 +4,15 @@
 <script src = "{{url_for('static', filename='js/tutorial.js')}}"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index/tutorial.css') }}">
 {% endblock %}
+
+{# tutorial page for user with dropdown slider and videos #}
 <div class="steps">
   <div class="step">
     <div class="step-header">
       <div class="header">Welcome to the Money Rocket Tutorial. </div>
       <div class="subheader">Start by constructing your Portfolio and saving it. For tips to construct a portfolio, see our finance tutorial page from the home page.</div>
     </div>
+    {# video format and click down #}
     <div class="step-content one">
       <video id = "vid1" height = "460px" width = "100%" controls>
         <source src="{{ url_for('static', filename = 'assets/tut1.mp4')}}" type="video/mp4">

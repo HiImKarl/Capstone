@@ -4,7 +4,7 @@
  <script src = "{{url_for('static', filename='js/back_testing.js')}}"></script>
 
 {% endblock %}
-
+{# backtesting page which allows user to choose a range to backtest their portfolio #}
 <div class="card text-center">
   <div class="card-header bg-light">
   </div>
@@ -61,12 +61,13 @@
             <input type = 'number' value = 1.1>
         </div>
     </div>
+    {# select a range for testing #}
     <div style = "margin-bottom: 12px;">
         <input type="text" name="daterange" class = "huh" placeholder = "Click here to select a range of dates to backtest from!" />
     </div>
     <a href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
 
-    {# pass in scoped current portfolio along with time window from input to backtest #}
+    {# click to backtest portfolio #}
     <a onclick = "backtest()" class="btn btn-success">Backtest this portfolio on the chosen time interval</a>
   </div>
   <div class="card-footer text-muted">

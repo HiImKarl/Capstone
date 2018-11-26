@@ -65,7 +65,6 @@ function addStock(item) {
         } else {
             to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
         }
-
     };
     to_show.sort();
     var argsString = Array.prototype.join.call(to_show, "");
@@ -96,24 +95,23 @@ function updateAmount(value, ticker){
     how_many[ticker] = parseFloat(value);
 }
 
-function reset() {
+function reset(){
     if (confirm('Are you sure you want to reset your current Portfolio?')) {
         seen = {};
         curr_selected = [];
-        for (let ticker in how_many){
+        for (ticker in how_many){
             how_many[ticker] = 0;
         }
         document.getElementById("portfolio").innerHTML = '';
         document.getElementById("myDropdown").innerHTML = '';
+    } else {
+        pass
     }
-}
+};
 
-function submit() {
-    $.ajax("/set_portfolio", {
-        data: JSON.stringify(how_many),
-        contentType: 'application/json',
-        type: 'post',
-        dataType: 'json',
-        async: true,
+function submit(){
+    let data = how_many;
+    $.post("/set_portfolio", how_many, function(){
+        console.log("successfully saved portfolio")
     });
 }

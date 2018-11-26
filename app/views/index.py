@@ -14,10 +14,10 @@ def index():
     return render_template('index/index.jinja2')
 
 
-@bp.route('/backtesting')
+@bp.route('/back_testing')
 @login_required
-def backtesting():
-    return render_template('index/backtesting.jinja2')
+def back_testing():
+    return render_template('index/back_testing.jinja2')
 
 
 @bp.route('/tutorial')
@@ -69,6 +69,11 @@ def set_portfolio():
 @login_required
 def generate_better():
     return render_template('index/generate_better.jinja2')
+
+@bp.route('/generate_target', methods=('GET', 'POST'))
+@login_required
+def generate_target():
+    return render_template('index/generate_target.jinja2')
 
 
 @bp.before_request

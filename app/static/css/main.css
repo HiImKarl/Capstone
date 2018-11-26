@@ -8,6 +8,9 @@
     -o-animation: fadein 0.5s; /* Opera < 12.1 */
     animation: fadein 0.5s;
 }
+.white {
+    background: white;
+}
 
 light {
     color: white;
@@ -296,7 +299,6 @@ hr.divider {
     }
   }
   
-  
   @keyframes flames{
     0%{
       transform:scale(0.8) rotate(45deg) skew(8deg, 8deg) rotate(180deg);
@@ -331,3 +333,14 @@ hr.divider {
       transform: translate(10px);
     }
   }
+
+  @import "compass/css3";
+  * {
+    box-sizing: border-box;
+  }
+
+
+#scroller {
+    height: 200px; 
+    overflow-y: scroll;
+}

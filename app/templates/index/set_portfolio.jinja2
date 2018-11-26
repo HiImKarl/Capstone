@@ -4,9 +4,11 @@
 <script src = "{{url_for('static', filename='js/set_portfolio.js')}}"></script>
 {% endblock %}
 <div class = 'center'>
-{# <img style = "margin: 0 auto; width: 20%; display: inline-block; "src="{{url_for('static', filename='assets/money.png')}}"> #}
+
+{# allows the user to set portfolio and reset their portfolio #}
 <img style = "vertical-align: top" src ="{{url_for('static', filename='assets/info.gif')}}">
 </div>
+{# search bar with filter function in javascript #}
 <div class="input-group mb-3" style = "margin-top: 5px">
     <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" style = "background-color: white" type="search" autocomplete = "off" placeholder="Search for a stock ticker i.e. AMZN" id="myInput" onkeyup="filterFunction()">
 </div>    
@@ -20,10 +22,13 @@
     <h3 class="card-title">Your Current Portfolio of Assets</h3>
     <div id = "portfolio">
     </div>
+    {# submitting makes a POST request #}
     <a onClick = "submit()" class="btn btn-success">Submit Portfolio</a>
     <a onClick = "reset()" class="btn btn-danger">Reset Portfolio</a>
   </div>
   <div class="card-footer text-muted">
   </div>
 </div>
+
+
 {% endblock %}

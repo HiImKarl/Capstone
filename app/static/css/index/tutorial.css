@@ -182,3 +182,6 @@ outline: 0;
 .step.minimized:hover {
 background-color: rgba(0, 0, 0, 0.06);
 }
+
+nav ul{height:200px; width:18%;}
+nav ul{overflow:hidden; overflow-y:scroll;}
