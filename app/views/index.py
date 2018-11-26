@@ -25,10 +25,12 @@ def back_testing():
 def tutorial():
     return render_template('index/tutorial.jinja2')
 
+
 @bp.route('/about')
 @login_required
 def about():
     return render_template('index/about.jinja2')
+
 
 @bp.route('/preferences', methods=('GET', 'POST'))
 @login_required
@@ -36,7 +38,8 @@ def preferences():
     return render_template('index/preferences.jinja2')
 
 
-@bp.route('/set_portfolio', methods=('GET', 'POST')) @login_required
+@bp.route('/set_portfolio', methods=('GET', 'POST'))
+@login_required
 def set_portfolio():
     if request.method == 'POST':
         portfolio = request.json
