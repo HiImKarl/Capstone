@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, session, url_for, jsonify
+    Blueprint, flash, g, session, url_for, request, jsonify
 )
 from app.db import get_db
 from app.data import STOCK_TICKERS
@@ -21,3 +21,24 @@ def assets():
         tickers=STOCK_TICKERS,
         prices=prices
     )
+
+
+@bp.route('/portfolios', methods=('GET', ))
+def portfolios():
+    user_id = request.args.get('user_id')
+    assert(user_id is not None)
+    db = get_db()
+    portfolio = db.execute(
+        'SELECT pa.ticker, pa.amount FROM User u '
+        'INNER JOIN Portfolio p ON u.user_id = p.user_id '
+        'INNER JOIN PortfolioAsset pa ON p.portfolio_id = pa.portfolio_id '
+        'WHERE u.user_id = ?',
+        (user_id, )
+    ).fetchall()
+
+    portfolio = [dict(row) for row in portfolio]
+    json_portfolio = {'amount': [], 'ticker': []}
+    for row in portfolio:
+        json_portfolio['ticker'].append(row['ticker'])
+        json_portfolio['amount'].append(row['amount'])
+    return jsonify(json_portfolio)
