@@ -1,10 +1,5 @@
 {% extends "index/base.jinja2" %}
 {% block content %} 
-{% for message in get_flashed_messages() %}
-    {% if message == "Successfully logged in!" %}
-        <div class = "alert alert-success"> {{message}}</div>
-    {% endif %}
-{% endfor %}
 <div class="card border-primary mb-4 text-center hoverable" style = "margin-bottom: 15px !important; padding: 20px 0;">
      <div class="card-body">
         <div class="row">

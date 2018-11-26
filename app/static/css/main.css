@@ -9,19 +9,34 @@
     animation: fadein 0.5s;
 }
 
+light {
+    color: white;
+}
+
+#username, select, textarea {
+    color: white;
+}
+
+#password, select, textarea {
+    color: white;
+}
+
+.huh {
+    background-color: white !important;
+}
 
 body {
     background-color: #000;
     background-image: url("https://png.pngtree.com/element_origin_min_pic/16/10/27/205811f1e9497cb.jpg");
-
-}
-.huh {
-    background-color: white !important;
-}
-body {
-    background-color: #dbedff;
 }
 
+.light {
+    color: white;
+}
+.light:a {
+    color: white;
+    font-weight: bold;
+}
 .jumbotron {
     background-color: white;
     padding-left: 100px;
@@ -226,7 +241,6 @@ hr.divider {
   }
   .jc-stars{
     z-index: -1;
-    background-color:#fff;
     position:absolute;
     top:-10%;
     height: 10px;

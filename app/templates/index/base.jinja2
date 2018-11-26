@@ -5,7 +5,7 @@
 {% endblock %}
 {% block navbar %}
 <nav class="main navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 10px;">
-  <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
+  <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fa fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -48,7 +48,7 @@
   </div>
 </nav>
 {% endblock %}
-{% block body %}
-    {% block content %}{% endblock %}
-{% endblock %}
+  {% block body %}
+      {% block content %}{% endblock %}
+  {% endblock %}
 

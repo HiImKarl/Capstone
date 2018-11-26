@@ -6,10 +6,10 @@
 {% block content %}
 
 
-<form class="text-center border border-light p-5" method = "post" style = "border: 0 !important;">
+<form class="text-center border border-light p-5 light" method = "post" style = "border: 0 !important;">
     <p class="h3 mb-4">Sign in</p>
 
-    <dl>
+    <dl class = " light">
         {{ render_field(form.username) }}<br>
         {{ render_field(form.password) }}
     </dl>
@@ -46,13 +46,5 @@
         <i class="fa fa-github"></i>
     </a>
 </form>
-    <script>
-        function f(data) {
-            alert(data['tickers']);
-            alert(data['prices']);
-        }
-    </script>
-
-    <button onclick="$.getJSON('{{ url_for('api.assets') }}', f)">CLICK ME</button>
 {% endblock %}
 
