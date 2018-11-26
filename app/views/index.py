@@ -25,6 +25,10 @@ def backtesting():
 def tutorial():
     return render_template('index/tutorial.jinja2')
 
+@bp.route('/about')
+@login_required
+def about():
+    return render_template('index/about.jinja2')
 
 @bp.route('/preferences', methods=('GET', 'POST'))
 @login_required

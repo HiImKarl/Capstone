@@ -1,0 +1,77 @@
+{% extends "index/base.jinja2" %}
+{% block content %}
+{% block imports %}
+ <script src = "{{url_for('static', filename='js/back_testing.js')}}"></script>
+
+{% endblock %}
+
+<div class="card text-center">
+  <div class="card-header bg-light">
+  </div>
+  <div class="card-body">
+    <h3 class="card-title">Your Current Portfolio of Assets</h3>
+    <div id = "portfolio">
+        {# simply placeholders here for now #}
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>AMZN</h2>
+            $420.42
+            <input type = 'number' value = 12.1>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>GOOG</h2>
+            $182.31
+            <input type = 'number' value = 5.3>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>MSFT</h2>
+            $21.58
+            <input type = 'number' value = 8.0>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>FB</h2>
+            $69.42
+            <input type = 'number' value = 1.1>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>FB</h2>
+            $69.42
+            <input type = 'number' value = 1.1>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>FB</h2>
+            $69.42
+            <input type = 'number' value = 1.1>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>FB</h2>
+            $69.42
+            <input type = 'number' value = 1.1>
+        </div>
+        <div class = "stock">
+            <span class='close'>X</span>
+            <h2>FB</h2>
+            $69.42
+            <input type = 'number' value = 1.1>
+        </div>
+    </div>
+    <div style = "margin-bottom: 12px;">
+        <input type="text" name="daterange" class = "huh" placeholder = "Click here to select a range of dates to backtest from!" />
+    </div>
+    <a href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
+
+    {# pass in scoped current portfolio along with time window from input to backtest #}
+    <a onclick = "backtest()" class="btn btn-success">Backtest this portfolio on the chosen time interval</a>
+  </div>
+  <div class="card-footer text-muted">
+  </div>
+</div>
+<canvas id="myChart" style = "display: inline-block; margin-top: 20px"; width = "300 !important" height= "200 !important"></canvas>
+
+{% endblock %}
