@@ -338,9 +338,3 @@ hr.divider {
   * {
     box-sizing: border-box;
   }
-
-
-#scroller {
-    height: 200px; 
-    overflow-y: scroll;
-}

@@ -1,6 +1,9 @@
 {% extends "index/base.jinja2" %}
 {% block content %}
 {% block imports %}
+<script>
+var user_id = {{g.user['user_id']}};
+</script>
 <script src = "{{url_for('static', filename='js/set_portfolio.js')}}"></script>
 {% endblock %}
 <div class = 'center'>

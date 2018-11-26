@@ -4,14 +4,40 @@ var seen = {};
 var how_many = {};
 var stock_data = {};
 
-$.getJSON('/api/assets', function(data) {
-    let tickers = data['tickers'];
-    let prices = data['prices'];
-    for (let i = 0; i < tickers.length; ++i) {
-        stock_data[tickers[i]] = {"price": prices[i]}
-        how_many[tickers[i]] = 0;
-    };
-});
+document.onload = on_load(user_id);
+
+function on_load(user_id){
+    $.getJSON('/api/assets', function(data) {
+        let tickers = data['tickers'];
+        let prices = data['prices'];
+        for (let i = 0; i < tickers.length; ++i) {
+            stock_data[tickers[i]] = {"price": prices[i]}
+        };
+    }).done(function() {
+        var new_tickers = []
+        $.getJSON('/api/portfolios?user_id=' + user_id, function(data){
+            let new_amounts = data['amount'];
+            new_tickers = data['ticker'];
+            for (let i = 0; i < new_amounts.length; i++){
+                how_many[new_tickers[i]] = new_amounts[i];
+                seen[new_tickers[i]] = ''
+                curr_selected.push(new_tickers[i]);
+            }
+        }).done(function (){
+            var to_show = [];
+            console.log(stock_data);
+            for (ticker in how_many){
+                if (how_many[ticker] != 0 ){
+                    to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+ticker+"')\">X</span><h2>" + ticker + "</h2>$ " + stock_data[ticker]["price"] + "</br><input type='number' value = '"+ how_many[ticker] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+ticker+"\")'></div>" );      
+                }
+            };     
+
+            to_show.sort();
+            var argsString = Array.prototype.join.call(to_show, "");
+            document.getElementById("portfolio").innerHTML = argsString;
+        });
+    });
+};
 
 // #stock data is our stock-> prices map
 function myFunction() {

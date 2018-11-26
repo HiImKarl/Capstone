@@ -3,79 +3,50 @@
 {% block imports %}
 {% endblock %}
 
+<script>
+var stock_data = {}
+$(document).ready = on_load({{g.user['user_id']}});
+
+function on_load(user_id){
+    console.log(user_id);
+    $.getJSON('/api/portfolios?user_id=' + user_id, function(data){
+        let amounts = data['amount'];
+        let tickers = data['ticker'];
+        for (let i = 0; i < amounts.length; i++){
+            stock_data[tickers[i]] = amounts[i];
+        }
+    }).done(function (){
+        let arr = [];
+        console.log(stock_data);
+        arr.sort();
+        for (ticker in stock_data){
+
+            arr.push("<li class=\"list-group-item\">"+ ticker + " (amount: " + stock_data[ticker]+")</li>" );
+        };
+
+        var args_String = arr.join('');
+        document.getElementById('lol').innerHTML = args_String;        
+    });
+}
+</script>
+
 <div class="card text-center">
-  <div class="card-header bg-light">
-  </div>
   <div class="card-body">
     <h3 class="card-title">Your Current Portfolio of Assets</h3>
-    <div id = "portfolio">
-        {# simply placeholders here for now #}
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>AMZN</h2>
-            $420.42
-            <input type = 'number' value = 12.1>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>GOOG</h2>
-            $182.31
-            <input type = 'number' value = 5.3>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>MSFT</h2>
-            $21.58
-            <input type = 'number' value = 8.0>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>FB</h2>
-            $69.42
-            <input type = 'number' value = 1.1>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>FB</h2>
-            $69.42
-            <input type = 'number' value = 1.1>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>FB</h2>
-            $69.42
-            <input type = 'number' value = 1.1>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>FB</h2>
-            $69.42
-            <input type = 'number' value = 1.1>
-        </div>
-        <div class = "stock">
-            <span class='close'>X</span>
-            <h2>FB</h2>
-            $69.42
-            <input type = 'number' value = 1.1>
+    <div class="text-center" style = "box-shadow: 0 !important;margin-bottom: 15px !important; padding: 20px 0;">
+        <div class="card-body">
+            <div class="row">
+                <ul id = "lol" class = "list-group" style="width:50%; height:100px; overflow:hidden; overflow-y: scroll; text-align: left; border: 1px solid gray">
+                </ul>
+                <canvas id="doughnut-chart" width="400" height="223"></canvas>
+                <script src = "{{url_for('static', filename='js/donut.js')}}"></script>
+            </div>
         </div>
     </div>
-    <div style = "margin-bottom: 12px;">
+    
+    <div style = "margin: 12px 0;">
         <input type="text" name="daterange" class = "huh" placeholder = "Click here to select a range of dates to backtest from!" />
     </div>
-    <ul style="height:100px;overflow:hidden; overflow-y: scroll;">
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-        <li> hello </li>
-    </ul>
     <a href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
     {# pass in scoped current portfolio along with time window from input to backtest #}
     <a class="btn btn-success">Generate a better portfolio on this time interval</a>
