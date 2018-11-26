@@ -36,22 +36,45 @@ def preferences():
     return render_template('index/preferences.jinja2')
 
 
-@bp.route('/set_portfolio', methods=('GET', 'POST'))
-@login_required
+@bp.route('/set_portfolio', methods=('GET', 'POST')) @login_required
 def set_portfolio():
     if request.method == 'POST':
         portfolio = request.json
         print(portfolio)
         db = get_db()
+
+        # FIXME limiting to one portfolio
+        # remove previous portfolios
+        # we are only considering one portfolio
+
+        portfolio_ids = db.execute(
+            'SELECT portfolio_id FROM Portfolio WHERE user_id = ?',
+            (g.user['user_id'], )
+        ).fetchall()
+
+        for row in portfolio_ids:
+            print(row['portfolio_id'])
+            db.execute(
+                'DELETE FROM PortfolioAsset WHERE portfolio_id = ?',
+                (row['portfolio_id'], )
+            )
+
+        db.execute(
+            'DELETE FROM Portfolio WHERE user_id = ?',
+            (g.user['user_id'], )
+        )
+
+        # Insert the new portfolio into the database
         cursor = db.cursor()
         cursor.execute(
             'INSERT INTO Portfolio (user_id) VALUES (?)', (g.user['user_id'], )
         )
 
         portfolio_id = cursor.lastrowid
-
         for ticker, amount in portfolio.items():
-            if amount == 0:
+            # FIXME this should realistically never happen
+            # with frontend validation
+            if amount == 0 or amount is None:
                 continue
 
             db.execute(
@@ -69,6 +92,7 @@ def set_portfolio():
 @login_required
 def generate_better():
     return render_template('index/generate_better.jinja2')
+
 
 @bp.route('/generate_target', methods=('GET', 'POST'))
 @login_required

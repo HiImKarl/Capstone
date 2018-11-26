@@ -8,8 +8,7 @@ DROP TABLE IF EXISTS PortfolioAsset;
 
 CREATE TABLE User (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
+  username TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
   risk_profile REAL
 );
 

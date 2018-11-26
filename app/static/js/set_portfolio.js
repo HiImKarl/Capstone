@@ -107,11 +107,15 @@ function reset(){
     } else {
         pass
     }
-};
+}
 
-function submit(){
-    let data = how_many;
-    $.post("/set_portfolio", how_many, function(){
-        console.log("successfully saved portfolio")
+function submit() {
+    $.ajax("/set_portfolio", {
+        data: JSON.stringify(how_many),
+        contentType: 'application/json',
+        type: 'post',
+        dataType: 'json',
+        async: true,
     });
 }
+
