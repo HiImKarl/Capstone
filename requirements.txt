@@ -1,6 +1,7 @@
 certifi==2018.10.15
 chardet==3.0.4
 Click==7.0
+cycler==0.10.0
 dominate==2.3.4
 Flask==1.0.2
 Flask-Bootstrap==3.3.7.1
@@ -9,14 +10,15 @@ idna==2.7
 inflection==0.3.1
 itsdangerous==1.1.0
 Jinja2==2.10
+kiwisolver==1.0.1
 MarkupSafe==1.1.0
 more-itertools==4.3.0
 numpy==1.15.4
 pandas==0.23.4
 patsy==0.5.1
+pyparsing==2.3.0
 python-dateutil==2.7.5
 pytz==2018.7
-Quandl==3.4.4
 requests==2.20.1
 scipy==1.1.0
 six==1.11.0
