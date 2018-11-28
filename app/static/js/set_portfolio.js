@@ -122,15 +122,13 @@ function updateAmount(value, ticker){
 }
 
 function reset() {
-    if (confirm('Are you sure you want to reset your current Portfolio?')) {
-        seen = {};
-        curr_selected = [];
-        for (let ticker in how_many){
-            how_many[ticker] = 0;
-        }
-        document.getElementById("portfolio").innerHTML = '';
-        document.getElementById("myDropdown").innerHTML = '';
+    seen = {};
+    curr_selected = [];
+    for (let ticker in how_many){
+        how_many[ticker] = 0;
     }
+    document.getElementById("portfolio").innerHTML = '';
+    document.getElementById("myDropdown").innerHTML = '';
 }
 
 function submit() {

@@ -16,7 +16,7 @@ $(function() {
     });
 });
 
-function backtest(){
+function backtest() {
 
     if (confirm("Are you sure you want to backtest?")){
         var ctx = document.getElementById("myChart");
