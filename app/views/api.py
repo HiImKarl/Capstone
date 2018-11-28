@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, session, url_for, request, jsonify
 )
 from app.db import get_db
-from app.data import STOCK_TICKERS
+from app.data import STOCK_TICKERS, ETF_TICKERS
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -11,14 +11,15 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 def assets():
     prices = []
     db = get_db()
-    for TICKER in STOCK_TICKERS:
+    tickers = STOCK_TICKERS + ETF_TICKERS
+    for ticker in tickers:
         price = db.execute(
-            'SELECT price FROM Asset WHERE ticker = ?', (TICKER, )
+            'SELECT price FROM Asset WHERE ticker = ?', (ticker, )
         ).fetchone()
         prices.append(price['price'])
 
     return jsonify(
-        tickers=STOCK_TICKERS,
+        tickers=tickers,
         prices=prices
     )
 
