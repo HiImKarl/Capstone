@@ -3,7 +3,7 @@ import scipy.optimize as opt
 
 
 def variance(x, stats):
-    q, mu, mu_goal = stats
+    q, mu, mu_goal, rf = stats
     # X is a row-vector
     # Q is the covariance matrix
     z = np.array(x)
@@ -13,13 +13,13 @@ def variance(x, stats):
 
 
 def ret_goal(x, stats):
-    q, mu, mu_goal = stats
+    q, mu, mu_goal, rf = stats
 
     # x and mu are row vectors
     z = np.array(x)
 
     # add the risk free return
-    z_mu = np.array(mu)
+    z_mu = np.append(np.array(mu), rf)
     val = np.matmul(z, np.transpose(z_mu)) - mu_goal
     return val
 
@@ -28,33 +28,31 @@ def budget(x):
     return np.sum(x)-1
 
 
-def mvo(q, mu, mu_goal, short_selling_allowed=False):
+def mvo(q, mu, mu_goal, rf,  short_selling_bound):
     """
     :param q: 2d numpy covariance matrix
     :param mu: numpy returns vector
     :param mu_goal: return value goal
-    :param short_selling_allowed: set to True if shorting should be allowed
+    :param rf; the risk free rate
+    :param short_selling_bound set to maximum % allowed to short sell, from -np.inf to 0
     :return: a tuple: np array of weights, the variance, and the return
     of the optimized portfolio
     """
 
     # arg structure
-    data = [q, mu, mu_goal]
+    data = [q, mu, mu_goal, rf]
 
     # constraint structure
     cons = [{'type': 'eq', 'fun': budget, 'args': (data,)},
             {'type': 'ineq', 'fun': ret_goal, 'args': (data,)}]
     
     # initial guess construction
-    x0 = np.zeros(len(mu))
+    x0 = np.zeros(len(mu)+1)
     x0[0] = 1
 
-    # no short selling condition
-    bounds = [(0, np.inf) for _ in x0]
 
     # short selling condition
-    if short_selling_allowed:
-        bounds = [(-np.inf, np.inf) for _ in x0]
+    bounds = [(short_selling_bound, np.inf) for _ in x0]
     
     # optimization
     res = opt.minimize(variance, x0, args=(data,), method='SLSQP',
