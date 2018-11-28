@@ -45,10 +45,12 @@ with open('data/etf_shares.csv') as f:
 with open('data/factors.csv', 'r') as f:
     reader = csv.reader(f)
     FF_FACTORS = []
+    RISK_FREE = []
     for row in reader:
         # the first column is the date
         FF_FACTORS.append((float(row[1]), float(row[2]),
-                           float(row[3]), float(row[4])))
+                           float(row[3])))
+        RISK_FREE.append(float(row[4]))
 
 
 def intrinio_historical_data(ticker, item):

@@ -282,17 +282,17 @@ def bl_cr(mkt_cap, mu, q, rf, tau, k):
     return np.matmul(x3, x6)
 
 
-def bl_weights_normalized(retvec, rac, q):
-    w = np.matmul(np.linalg.inv(rac * q), retvec)
+def bl_weights_normalized(returns, rac, q):
+    w = np.matmul(np.linalg.inv(rac * q), returns)
     return w / np.sum(w)
 
 
 # put everything together to make a function
 # need rets, factors, risk free and market cap probably
-def blacklitterman(mu, q, rf, mkt_cap, tau = 0.02, K = 10):
+def black_litterman(mu, q, rf, mkt_cap, tau=0.02, k=10):
     # use factor modelling to get estimates
     rac = bl_lambda(mkt_cap, mu, q, rf)
-    cr = bl_cr(mkt_cap, mu, q, rf, tau, K)
+    cr = bl_cr(mkt_cap, mu, q, rf, tau, k)
     w = bl_weights_normalized(cr, rac, q)
 
     return w

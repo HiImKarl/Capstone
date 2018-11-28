@@ -1,7 +1,7 @@
 import sqlite3
 import click
 import numpy as np
-from app.data import get_asset_data, FF_FACTORS, TODAY_DATETIME, STOCK_TICKERS, ETF_TICKERS
+from app.data import get_asset_data, FF_FACTORS, RISK_FREE, TODAY_DATETIME, STOCK_TICKERS, ETF_TICKERS
 from app.util import limit_list_size
 from dateutil.relativedelta import relativedelta
 from business_logic.farma_french import ff3_ols, ff3_cov_est, ff3_return_estimates
@@ -36,10 +36,6 @@ def init_db():
     market_caps, prices = get_asset_data()
     assert(len(market_caps) == len(prices))
 
-    # grab return and covariances from Farma French factor model
-    factors = [[FACTOR[0], FACTOR[1], FACTOR[2]] for FACTOR in FF_FACTORS]
-    risk_free = [FACTOR[3] for FACTOR in FF_FACTORS]
-
     # populate the asset and asset data tables
     returns = [[price_array[i] / price_array[i - 1] - 1 for i in range(1, len(price_array))]
                for ticker, price_array in prices.items()]
@@ -51,8 +47,9 @@ def init_db():
     xreturns = np.transpose(xreturns)
 
     # make sure the factors are the same size as the returns
-    factors = limit_list_size(factors, len(returns[0]))
-    risk_free = limit_list_size(risk_free, len(returns[0]))
+    # grab return and covariances from Farma French factor model
+    factors = limit_list_size(FF_FACTORS, len(returns[0]))
+    risk_free = limit_list_size(RISK_FREE, len(returns[0]))
 
     xfactors = np.array(factors, dtype=np.dtype('float'))
     xrisk_free = np.array(risk_free, dtype=np.dtype('float'))
