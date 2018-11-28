@@ -1,8 +1,8 @@
 import sqlite3
 import click
 import numpy as np
-from app.data import get_sp500_data, FF_FACTORS, TODAY_DATETIME, STOCK_TICKERS
-from app.util import arbitrary_value_from_dict, limit_list_size
+from app.data import get_asset_data, FF_FACTORS, TODAY_DATETIME, STOCK_TICKERS, ETF_TICKERS
+from app.util import limit_list_size
 from dateutil.relativedelta import relativedelta
 from business_logic.farma_french import ff3_ols, ff3_cov_est, ff3_return_estimates
 from flask import current_app, g
@@ -32,8 +32,8 @@ def init_db():
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
-    # grab asset data from sp500
-    market_caps, prices = get_sp500_data()
+    # grab S&P500 and ETF asset data
+    market_caps, prices = get_asset_data()
     assert(len(market_caps) == len(prices))
 
     # grab return and covariances from Farma French factor model
@@ -65,28 +65,30 @@ def init_db():
     ff_returns = xff_returns.tolist()
     ff_covariances = xff_covariances.tolist()
 
-    assert(len(ff_returns) == len(STOCK_TICKERS))
-    assert(len(ff_covariances) == len(STOCK_TICKERS))
-    assert(len(ff_covariances[0]) == len(STOCK_TICKERS))
+    tickers = STOCK_TICKERS + ETF_TICKERS
+
+    assert(len(ff_returns) == len(tickers))
+    assert(len(ff_covariances) == len(tickers))
+    assert(len(ff_covariances[0]) == len(tickers))
 
     db.executemany(
         'INSERT INTO Asset (ticker, average_return, price) VALUES (?, ?, ?)',
-        zip(STOCK_TICKERS, ff_returns, [value[-1] for key, value in prices.items()])
+        zip(tickers, ff_returns, [value[-1] for key, value in prices.items()])
     )
 
     for i in range(len(xff_covariances)):
         for j in range(len(xff_covariances)):
             db.execute(
                 'INSERT INTO Covariance (ticker1, ticker2, covariance) VALUES (?, ?, ?)',
-                (STOCK_TICKERS[i], STOCK_TICKERS[j], ff_covariances[i][j])
+                (tickers[i], tickers[j], ff_covariances[i][j])
             )
 
-    for TICKER in STOCK_TICKERS:
+    for ticker in tickers:
         for i in range(len(times)):
             db.execute(
                 'INSERT INTO WeeklyAssetData (ticker, date_time, price, market_cap)'
                 'VALUES (?, ?, ?, ?)',
-                (TICKER, times[i], prices[TICKER][i], market_caps[TICKER][i],)
+                (ticker, times[i], prices[ticker][i], market_caps[ticker][i],)
             )
 
     for i in range(len(times)):

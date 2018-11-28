@@ -1,11 +1,5 @@
 {% extends "index/base.jinja2" %}
 {% block content %} 
-{% for message in get_flashed_messages() %}
-    {% if message == "Successfully logged in!" %}
-        <div class = "alert alert-success"> {{message}}</div>
-    {% endif %}
-{% endfor %}
-
 <script>
 window.onload = function() {
     setTimeout(function() {
