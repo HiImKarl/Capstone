@@ -5,6 +5,15 @@
         <div class = "alert alert-success"> {{message}}</div>
     {% endif %}
 {% endfor %}
+
+<script>
+window.onload = function() {
+    setTimeout(function() {
+        window.location.replace('{{ url_for('index.about') }}');
+    }, 1000);
+}
+</script>
+
 {# loading page, rocket animation with css #}
 <div class="jc-con">
   <div class="jc-stars">   

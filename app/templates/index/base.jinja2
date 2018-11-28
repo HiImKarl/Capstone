@@ -6,16 +6,13 @@
 {% block navbar %}
 {# is the base file that everything in the index folder follows: a common navbar #}
 <nav class="main navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 10px;">
-  <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fa fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
+  <a class="navbar-brand" href="{{ url_for('index.about') }}"><i class="fa fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" style = "margin-right: 5px;">
-        <a class="nav-link" href="{{ url_for('index') }}">Overview <span class="sr-only">(current)</span></a>
-      </li>
       <li class="nav-item" style = "margin-right: 5px;">
         <a class="nav-link" href="{{ url_for('index.about') }}">About Us</a>
       </li>

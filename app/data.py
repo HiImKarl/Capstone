@@ -41,6 +41,8 @@ def intrinio_historical_data(ticker, item):
     from PAST_DATETIME to TODAY_DATETIME, with weekly frequency
     """
 
+    global intrinio_api_key_index
+
     params = {
         'item': item,
         'ticker': ticker,
@@ -51,7 +53,6 @@ def intrinio_historical_data(ticker, item):
     }
 
     # increment api key index LUL
-    global intrinio_api_key_index
     intrinio_api_key_index += 1
     if intrinio_api_key_index == len(INTRINIO_API_KEYS):
         intrinio_api_key_index = 0
