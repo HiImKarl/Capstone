@@ -4,3 +4,4 @@ venv/
 *.info
 *.egg-info
 build/
+*.idea

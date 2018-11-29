@@ -31,7 +31,8 @@ with open('data/stock_tickers.csv', 'r') as f:
 with open('data/etf_tickers.csv', 'r') as f:
     reader = csv.reader(f)
     ETF_TICKERS = [ticker.strip() for ticker in list(reader)[0]]
-    ETF_TICKERS = ETF_TICKERS
+
+TICKERS = STOCK_TICKERS + ETF_TICKERS
 
 with open('data/etf_shares.csv') as f:
     reader = csv.reader(f)
@@ -40,7 +41,6 @@ with open('data/etf_shares.csv') as f:
     assert len(shares_outstanding) == len(ETF_TICKERS)
     for i in range(len(shares_outstanding)):
         ETF_SHARES_OUTSTANDING[ETF_TICKERS[i]] = float(shares_outstanding[i])
-
 
 with open('data/factors.csv', 'r') as f:
     reader = csv.reader(f)

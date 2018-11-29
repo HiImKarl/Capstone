@@ -4,7 +4,6 @@ from flask import (
 from app.db import get_db
 from app.views.auth import login_required
 from app.data import STOCK_TICKERS
-
 bp = Blueprint('index', __name__)
 
 
