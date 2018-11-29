@@ -31,7 +31,7 @@ def MD_MVO(correl, card):
     cons += [cvx.sum_entries(y, axis = 0) == card]
 
 
-    obj_mat = np.(n)
+    obj_mat = np.empty(n, n)
 
     for i in range(n):
         for j in range(n):
