@@ -12,18 +12,18 @@ var user_id = {{g.user['user_id']}};
 <img style = "vertical-align: top" src ="{{url_for('static', filename='assets/info.gif')}}">
 </div>
 {# search bar with filter function in javascript #}
-<div class="input-group mb-3" style = "margin-top: 5px">
-    <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" style = "background-color: white" type="search" autocomplete = "off" placeholder="Search for a stock ticker i.e. AMZN" id="myInput" onkeyup="filterFunction()">
+<div class="input-group mb-3" style = "margin-top: 5px;">
+    <input id = "myInput" class="form-control form-control-lg form-control-borderless middle" style = "background-color: white; border-radius: 0.2rem;" type="search" autocomplete = "off" placeholder="Search for a stock ticker i.e. AMZN" id="myInput" onkeyup="filterFunction()">
 </div>    
 <div id="myDropdown" class="dropdown-content">   
 </div>
 
-<div class="card text-center">
+<div class="card text-center" style = "width: 90%; margin: 0 auto;">
   <div class="card-header bg-light">
   </div>
   <div class="card-body">
     <h3 class="card-title">Your Current Portfolio of Assets</h3>
-    <div id = "portfolio">
+    <div id = "portfolio" >
     </div>
     {# submitting makes a POST request #}
     <a onClick = "submit()" class="btn btn-success">Submit Portfolio</a>

@@ -16,11 +16,11 @@ light {
     color: white;
 }
 
-#username, select, textarea {
+input[name="username"]{
     color: white;
 }
 
-#password, select, textarea {
+input[name="password"]{
     color: white;
 }
 

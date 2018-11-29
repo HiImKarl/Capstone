@@ -1,3 +1,4 @@
+
 new Chart(document.getElementById("doughnut-chart"), {
     type: 'doughnut',
     data: {
@@ -11,9 +12,17 @@ new Chart(document.getElementById("doughnut-chart"), {
       ]
     },
     options: {
+      responsive: false,
       title: {
         display: true,
-        text: 'Predicted world population (millions) in 2050'
+        text: 'Distribution of Assets in your Portfolio'
+      },
+      legend: {
+          display: true,
+          labels: {
+            fontSize: 8,
+            boxWidth: 20
+          }
       }
     }
 });
