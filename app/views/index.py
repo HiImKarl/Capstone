@@ -1,9 +1,9 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from app.db import get_db
+from app.db import get_db, get_prices
 from app.views.auth import login_required
-from app.data import STOCK_TICKERS
+from app.data import STOCK_TICKERS, TODAY_DATETIME
 bp = Blueprint('index', __name__)
 
 
@@ -86,6 +86,7 @@ def set_portfolio():
             )
 
         db.commit()
+        flash("Successfully Submitted Portfolio")
 
     return render_template('index/set_portfolio.jinja2')
 

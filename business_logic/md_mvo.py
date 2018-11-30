@@ -20,29 +20,21 @@ def md_mvo(corr, card):
     :param card: The number of assets to be chosen (not including the rf asset (integer)
     :param corr: The nxn correlation matrix (np.array)
     '''
-
-    rho = np.array(corr)
-    n = len(rho[:, 0])
-
+    n = len(corr[:, 0])
     z = cvx.Variable((n, n), boolean=True)
     y = cvx.Variable(n, boolean=True)
-
     cons = []
     for i in range(n):
         for j in range(n):
-            cons += [
-                z[i, j] <= y[i]
-            ]
-        cons += [cvx.sum(z, axis=0) == 1]
+            cons.append(z[i][j] <= y[i])
+        cons.append(cvx.sum(z[:, i]) == 1)
 
-    cons += [cvx.sum(y, axis=0) == card]
+    cons.append(cvx.sum(y, axis=0) == card)
     obj_mat = np.empty((n, n), dtype=np.float64)
-
-    for i in range(n):
-        for j in range(n):
-            obj_mat[i, j] = rho[i, j] * z[i, j]
-
-    obj = cvx.Maximize(cvx.sum(obj_mat))
+    obj = cvx.Maximize(cvx.sum(np.matmul(corr, z)))
     prob = cvx.Problem(obj, cons)
     prob.solve()
     return y.value
+
+rho = np.array([[1,-0.2,0.3],[-0.2,1,-0.1],[0.3,-0.1,1]])
+card = 2

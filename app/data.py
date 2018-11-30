@@ -173,8 +173,6 @@ def get_asset_data():
     # ensure the arrays are the same size and not
     # greater than the maximum data point cap
 
-    print(smallest_length)
-
     for key in prices.keys():
         prices[key] = limit_list_size(prices[key], smallest_length)
 

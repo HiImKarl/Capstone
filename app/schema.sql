@@ -8,13 +8,15 @@ DROP TABLE IF EXISTS PortfolioAsset;
 
 CREATE TABLE User (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
   risk_profile REAL
 );
 
 CREATE TABLE Asset (
   ticker TEXT PRIMARY KEY,
   average_return REAL NOT NULL,
+  market_cap REAL NOT NULL,
   price REAL NOT NULL
 );
 

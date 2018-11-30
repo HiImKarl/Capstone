@@ -26,8 +26,8 @@ var user_id = {{g.user['user_id']}};
     <div id = "portfolio" >
     </div>
     {# submitting makes a POST request #}
-    <a onClick = "submit()" class="btn btn-success">Submit Portfolio</a>
-    <a onClick = "reset()" class="btn btn-danger">Reset Portfolio</a>
+    <a onClick = "submit(); $(body).fadeOut(100, function() {$(body).fadeIn(300);});" class="btn btn-success">Submit Portfolio</a>
+    <a onClick = "$(body).fadeOut(100, function() {$(body).fadeIn(300);}); reset()" class="btn btn-danger">Reset Portfolio</a>
   </div>
   <div class="card-footer text-muted">
   </div>

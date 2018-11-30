@@ -24,17 +24,18 @@ def ret_goal(x, stats):
     return val
 
 
-def budget(x):
+def budget(x, data):
     return np.sum(x)-1
 
 
-def mvo(q, mu, mu_goal, rf,  short_selling_bound):
+def mvo(q, mu, mu_goal, rf,  short_selling_bound=-np.inf):
     """
-    :param q: 2d numpy covariance matrix
-    :param mu: numpy returns vector
-    :param mu_goal: return value goal
-    :param rf; the risk free rate
-    :param short_selling_bound set to maximum % allowed to short sell, from -np.inf to 0
+    n = # assets
+    :param q: 2d n x n numpy covariance matrix
+    :param mu: numpy returns vector: n x 1
+    :param mu_goal: return scalar value goal
+    :param rf; the scalar risk free rate
+    :param short_selling_bound set to maximum % allowed to short sell, from (-np.inf, 0]
     :return: a tuple: np array of weights, the variance, and the return
     of the optimized portfolio
     """
@@ -49,7 +50,6 @@ def mvo(q, mu, mu_goal, rf,  short_selling_bound):
     # initial guess construction
     x0 = np.zeros(len(mu)+1)
     x0[0] = 1
-
 
     # short selling condition
     bounds = [(short_selling_bound, np.inf) for _ in x0]

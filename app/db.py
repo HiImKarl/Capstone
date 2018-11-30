@@ -67,8 +67,9 @@ def init_db():
     assert(len(ff_covariances[0]) == len(TICKERS))
 
     db.executemany(
-        'INSERT INTO Asset (ticker, average_return, price) VALUES (?, ?, ?)',
-        zip(TICKERS, ff_returns, [value[-1] for key, value in prices.items()])
+        'INSERT INTO Asset (ticker, average_return, market_cap, price) VALUES (?, ?, ?, ?)',
+        zip(TICKERS, ff_returns, [value[-1] for key, value in market_caps.items()],
+            [value[-1] for key, value in prices.items()])
     )
 
     for i in range(len(xff_covariances)):
@@ -94,6 +95,74 @@ def init_db():
         )
 
     db.commit()
+
+
+def get_covariance_matrix():
+    db = get_db()
+    cov_matrix = np.zeros((len(TICKERS), len(TICKERS)), dtype=np.float64)
+    for i in range(len(TICKERS)):
+        for j in range(len(TICKERS)):
+            cov = db.execute(
+                'SELECT covariance FROM Covariance WHERE ticker1 = ? AND ticker2 = ?',
+                (TICKERS[i], TICKERS[j], )
+            ).fetchone()
+            cov_matrix[i][j] = cov['covariance']
+
+    return cov_matrix
+
+
+def get_mu_vector():
+    db = get_db()
+    mu_vector = np.zeros((len(TICKERS), ), dtype=np.float64)
+    for i in range(len(TICKERS)):
+        mu = db.execute(
+            'SELECT average_return FROM Asset WHERE ticker = ?',
+            (TICKERS[i], )
+        ).fetchone()
+        mu_vector[i] = mu['average_return']
+
+    return mu_vector
+
+
+def get_market_caps():
+    db = get_db()
+    market_caps = np.zeros((len(TICKERS), ), dtype=np.float64)
+    for i in range(len(TICKERS)):
+        market_cap = db.execute(
+            'SELECT market_cap FROM Asset WHERE ticker = ?',
+            (TICKERS[i], )
+        ).fetchone()
+        market_caps[i] = market_cap['market_cap']
+
+    return market_caps
+
+
+def get_prices(start_date, end_date, tickers):
+    """
+    n = # of assets
+    m = # of data points
+    :return: n x m np array; for each asset, the historical prices
+    """
+    db = get_db()
+    prices_all = []
+    for ticker in tickers:
+        db_price_data = db.execute(
+            'SELECT price FROM WeeklyAssetData '
+            'WHERE ticker = ? '
+            'AND date_time >= ? ' 
+            'AND date_time <= ? ',
+            (ticker, start_date, end_date,)
+        ).fetchall()
+        prices = []
+        for row in db_price_data:
+            prices.append(row['price'])
+        prices_all.append(prices)
+
+    # FIXME assertions
+    for prices in prices_all:
+        assert len(prices) == len(prices_all[0])
+
+    return np.array(prices_all)
 
 
 @click.command('init-db')

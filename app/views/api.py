@@ -2,9 +2,12 @@ import numpy as np
 from flask import (
     Blueprint, abort, request, jsonify, render_template
 )
-from app.db import get_db
-from app.data import TICKERS
-from business_logic.md_mvo import cov_to_cor, md_mvo
+from app.db import get_db, get_covariance_matrix, get_mu_vector, get_market_caps, get_prices
+from app.data import TICKERS, RISK_FREE, TODAY_DATETIME
+from business_logic.black_litterman import black_litterman
+from business_logic.md_mvo import cov_to_cor
+from business_logic.mvo import mvo
+from dateutil.relativedelta import relativedelta
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -47,26 +50,61 @@ def portfolios():
     return jsonify(json_portfolio)
 
 
-# FIXME SECURITY ISSUE
-@bp.route('/correlations', methods=('GET',))
-def correlations():
-    cov_matrix = np.zeros((len(TICKERS), len(TICKERS)), dtype=np.float64)
-    db = get_db()
-    cov_data = db.execute('SELECT * FROM Covariance').fetchall()
-    cov_dict = {}
-    for TICKER in TICKERS:
-        cov_dict[TICKER] = {}
-
-    for row in cov_data:
-        cov_dict[row['ticker1']][row['ticker2']] = row['covariance']
-
-    for i in range(len(TICKERS)):
-        for j in range(len(TICKERS)):
-            cov_matrix[i][j] = cov_dict[TICKERS[i]][TICKERS[j]]
-
-    cor_matrix = cov_to_cor(cov_matrix)
-    return jsonify(
-        md_mvo(cor_matrix, 20)
-    )
+# FIXME TESTING
+@bp.route('/black_litterman', methods=('GET',))
+def black_litterman():
+    cov = get_covariance_matrix()
+    mu = get_mu_vector()
+    market_caps = get_market_caps()
+    rf = RISK_FREE[-1]
+    return jsonify(black_litterman(mu, cov, rf, market_caps).tolist())
 
 
+# FIXME TESTING
+@bp.route('/md_mvo', methods=('GET',))
+def md_mvo():
+    cor = cov_to_cor(get_covariance_matrix())
+    return jsonify(cor)
+
+
+def back_test_portfolio(portfolio, prices, rebalance=False):
+    """
+    n = # of assets
+    m = # of data points (weekly)
+    :param portfolio: n x 1 np array;
+        for each asset, the 'shares' of the asset in the portfolio
+    :param prices: n x m np array; for each asset, np array of historical prices
+    :param rebalance: Set to True if rebalancing should be enabled
+    :return: m x 1 np array; back tested caps of the portfolio
+    """
+
+    # always backtest using 5 years of data
+    pass
+
+
+# FIXME TESTING
+@bp.route('/prices')
+def prices():
+    start_date = TODAY_DATETIME - relativedelta(years=5)
+    prices_all = get_prices(start_date, TODAY_DATETIME, TICKERS)
+    return jsonify(prices_all.tolist())
+
+
+# FIXME TESTING
+@bp.route('/mvo', methods=('GET', ))
+def mvo_():
+    mu_goal = float(request.args.get('mu_goal'))
+    if not mu_goal:
+        abort(404)
+    cov = get_covariance_matrix()
+    mu = get_mu_vector()
+    print(mu)
+    rf = RISK_FREE[-1]
+    print(RISK_FREE)
+
+    portfolio, port_var, port_ret = mvo(cov, mu, mu_goal, rf, 0)
+    return jsonify({
+        'portfolio': portfolio.tolist(),
+        'var': port_var,
+        'ret': port_ret
+    })
