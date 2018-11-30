@@ -62,7 +62,7 @@ def black_litterman():
 
 # FIXME TESTING
 @bp.route('/md_mvo', methods=('GET',))
-def md_mvo():
+def md_mvo_test():
     cor = cov_to_cor(get_covariance_matrix())
     return jsonify(cor)
 
@@ -84,7 +84,7 @@ def back_test_portfolio(portfolio, prices, rebalance=False):
 
 # FIXME TESTING
 @bp.route('/prices')
-def prices():
+def prices_test():
     start_date = TODAY_DATETIME - relativedelta(years=5)
     prices_all = get_prices(start_date, TODAY_DATETIME, TICKERS)
     return jsonify(prices_all.tolist())
@@ -92,7 +92,7 @@ def prices():
 
 # FIXME TESTING
 @bp.route('/mvo', methods=('GET', ))
-def mvo_():
+def mvo_test():
     mu_goal = float(request.args.get('mu_goal'))
     if not mu_goal:
         abort(404)

@@ -21,12 +21,27 @@ def ff3_return_estimates(returns, factors, rf, coefficients):
     return np.array(ff3_ret)
 
 
+def err_var(rets, factors, rf, beta):
+    # get excess returns
+    excess_rets = rets - np.tile(rf, (len(rets[0]), 1)).transpose()
+    # now get matrix of residuals
+    # factors is n X 3; beta is pX3; rets is n X p
+    # so do rets - matmul(factors, beta^T)
+    residuals = excess_rets - np.matmul(factors, np.transpose(beta))
+    sigma_eps = np.cov(residuals, rowvar=False)
+
+    return sigma_eps
+
+
 # estimate the asset variances using factor modelling
-def ff3_cov_est(returns, factors, coefficients):
+def ff3_cov_est(returns, factors, rf, coefficients):
     ff3_cov = []
     
     # get factor variances and covariances
     sig_factors = np.cov(factors, rowvar=False)
+
+    sigma_eps = err_var(returns, factors, rf,
+                        [coefficients[i, 1:] for i in range(len(returns[0]))])
 
     # generate co-variance matrix
     for i in range(len(returns[0])):
@@ -39,12 +54,8 @@ def ff3_cov_est(returns, factors, coefficients):
                     for l in range(len(factors[0])):
                         ff3_cov_ij += coefficients[i, k] * coefficients[j, l] * sig_factors[k, l]
 
-                ff3_cov_ij += np.cov(
-                    np.array([returns[k][i]
-                              for k in range(
-                            len(returns))])) - np.dot(coefficients[i][1:] *
-                                                      coefficients[i][1:],
-                                                      np.array([sig_factors[l][l] for l in range(len(factors[0]))]))
+                ff3_cov_ij += sigma_eps[i][i]
+
             else:
                 ff3_cov_ij = 0
                 for k in range(len(factors[0])):

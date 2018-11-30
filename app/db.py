@@ -57,7 +57,7 @@ def init_db():
     xcoefficients = ff3_ols(xreturns, xfactors, xrisk_free)
 
     xff_returns = ff3_return_estimates(xreturns, xfactors, xrisk_free, xcoefficients)
-    xff_covariances = ff3_cov_est(xreturns, xfactors, xcoefficients)
+    xff_covariances = ff3_cov_est(xreturns, xfactors, xrisk_free, xcoefficients)
 
     ff_returns = xff_returns.tolist()
     ff_covariances = xff_covariances.tolist()
