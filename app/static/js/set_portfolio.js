@@ -55,7 +55,7 @@ function populate() {
     for (let ticker in stock_data) {
         if (stock_data.hasOwnProperty(ticker)) {
             if (!seen.hasOwnProperty(ticker)){
-                middle.push("<li class = 'list-group list-group-item hover' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>');
+                middle.push("<li class = 'list-group list-group-item hover' style = 'width: 90% !important; margin: 0 auto;' onClick = 'addStock(\""+ticker.toString()+"\")'>" + ticker + '</li>');
             }
         }
     }
@@ -129,6 +129,7 @@ function reset() {
     }
     document.getElementById("portfolio").innerHTML = '';
     document.getElementById("myDropdown").innerHTML = '';
+    submit();
 }
 
 function submit() {

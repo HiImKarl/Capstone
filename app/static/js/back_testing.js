@@ -19,7 +19,6 @@ $(function() {
 });
 
 function backtest() {
-
     if (confirm("Are you sure you want to backtest?")){
         var ctx = document.getElementById("myChart");
         var msft = [109.57, 106.87, 106.94, 104.97, 107.28, 108.29, 104.62, 101.71, 103.11, 103.07];
