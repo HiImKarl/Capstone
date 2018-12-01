@@ -80,9 +80,6 @@ def intrinio_historical_data(ticker, item):
     # request json from intrinio
     response = requests.get(url=INTRINIO_URL_BASE + 'historical_data', params=params)
     json_data = response.json()
-    if item == 'adj_close_price':
-        print(ticker)
-        print(json_data)
     data = [data_point['value'] for data_point in json_data['data']]
 
     # intrinio returns data from latest to earliest, want other way around
@@ -126,7 +123,7 @@ def log_into_kibot():
         'password': 'guest'
     }
 
-    # requests.get(KIBOT_URL_BASE, params=params)
+    requests.get(KIBOT_URL_BASE, params=params)
 
 
 def get_asset_data():

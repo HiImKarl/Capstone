@@ -34,7 +34,7 @@ def assets():
 # FIXME SECURITY ISSUE
 @bp.route('/portfolios', methods=('GET', ))
 def portfolios():
-    user_id = request.args.get('user_id')
+    user_id = float(request.args.get('user_id'))
     portfolio = get_user_portfolio(user_id)
     return jsonify(portfolio)
 
@@ -66,18 +66,14 @@ def back_test_user_portfolio():
     """
 
     # always backtest using 5 years of data
-    user_id = request.args.get('user_id')
+    user_id = float(request.args.get('user_id'))
     portfolio = get_user_portfolio(user_id)
     start_date = TODAY_DATETIME - relativedelta(years=5)
-    print(portfolio)
     prices_all = get_prices(start_date, TODAY_DATETIME, portfolio['ticker'])
 
     assert len(prices_all) == len(portfolio['ticker'])
     assert len(prices_all) == len(portfolio['amount'])
     market_caps = []
-
-    print(prices_all)
-    print(portfolio['amount'])
 
     for i in range(len(first_item_in_list(prices_all))):
         market_cap = 0
@@ -104,9 +100,7 @@ def mvo_test():
         abort(404)
     cov = get_covariance_matrix()
     mu = get_mu_vector()
-    print(mu)
     rf = RISK_FREE[-1]
-    print(RISK_FREE)
 
     portfolio, port_var, port_ret = mvo(cov, mu, mu_goal, rf, 0)
     return jsonify({
