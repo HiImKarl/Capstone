@@ -7,18 +7,6 @@
 var stock_data = {}
 var tickers = [];
 var amounts = [];
-$(function() {
-    $('input[name="daterange"]').daterangepicker({
-        "showDropdowns": true,
-        "minYear": 2010,
-        "maxYear": 2019,
-        "alwaysShowCalendars": true,
-        "startDate": "11/23/2018",
-        "endDate": "11/29/2018"
-    }, function(start, end, label) {
-        console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-    });
-});
 
 $(document).ready = on_load({{g.user['user_id']}});
 function getRandomColor() {
@@ -82,7 +70,8 @@ function on_load(user_id){
 </script>
 
 <div class="card text-center" style = "width: 70%; margin: 0 auto; padding: 20px 0; ">
-    <h3 class="card-title">Your Current Portfolio of Assets</h3>
+    <div class = "card-header bg-light" style = "height: 15px !important"></div>
+    <h3 style = "margin-top: 20px;"class="card-title">Your Current Portfolio of Assets</h3>
     <div style = "display: flex !important;justify-content: center; box-shadow: 0 !important;margin-bottom: 15px !important; padding: 20px 0;">
         <ul id = "lol" class = "list-group" style="margin-left: 10%; display: inline; width:40%; height:390px; overflow:hidden; overflow-y: scroll; text-align: left; border: 1px solid gray">
         </ul>
@@ -94,14 +83,14 @@ function on_load(user_id){
     <div style = "margin: 12px 0;">
         <input style = "width: 50%" type="text" name="daterange" class = "huh" placeholder = "Click here to select a range of dates to backtest from!" />
     </div>
-    <div>
-    <a style = "width: 50%" href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
-    {# pass in scoped current portfolio along with time window from input to backtest #}
-    <a style = "width: 50%"  class="btn btn-danger">Backtest your portfolio on this time interval</a>
-    <a style = "width: 50%"  class="btn btn-success">Generate a better portfolio on this time interval</a>
+    <div style = "margin-bottom: 20px;">
+        <a style = "width: 50%" href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
+        {# pass in scoped current portfolio along with time window from input to backtest #}
+        <a style = "width: 50%"  class="btn btn-danger">Backtest your portfolio on this time interval</a>
+        <a style = "width: 50%"  class="btn btn-success">Generate a better portfolio on this time interval</a>
     
     </div>
-
+    <div style = "height: 25px" class = "card-footer text-muted"></div>
 </div>
 
 {% endblock %}

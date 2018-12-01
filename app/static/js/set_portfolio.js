@@ -1,8 +1,20 @@
-
 let curr_selected = [];
 let seen = {};
 let how_many = {};
 let stock_data = {};
+let views = {};
+let views_map = {};
+views_map[-2] = "<select style = 'margin-top: 10px'><option selected = \"selected\" value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option value='0'>Neutral</option><option value='1'>Bearish</option><option value = '2'>Very Bearish </option></select>";
+views_map[-1] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option selected = \"selected\" value='-1'>Bullish</option><option  value='0'>Neutral</option><option value='1'>Bearish</option><option value = '2'>Very Bearish </option></select>";
+views_map[0] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option selected = \"selected\" value='0'>Neutral</option><option value='1'>Bearish</option><option value = '2'>Very Bearish </option></select>";
+views_map[1] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option value='0'>Neutral</option><option selected = \"selected\" value='1'>Bearish</option><option value = '2'>Very Bearish </option></select>";
+views_map[2] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option selected = \"selected\" value='0'>Neutral</option><option value='1'>Bearish</option><option value = '2' selected = \"selected\">Very Bearish </option></select>";
+
+// -2, -1, 0, -1, -2
+function change_view(item, view){
+    console.log(item, view);
+    views[item] = parseInt(view);
+}
 
 document.onload = on_load(user_id);
 
@@ -12,6 +24,7 @@ function on_load(user_id){
         let prices = data['prices'];
         for (let i = 0; i < tickers.length; ++i) {
             stock_data[tickers[i]] = {"price": prices[i]};
+            views[tickers[i]] = 0;
         }
     }).done(function() {
         let new_tickers = [];
@@ -25,10 +38,10 @@ function on_load(user_id){
             }
         }).done(function (){
             let to_show = [];
-            console.log(stock_data);
             for (let ticker in how_many){
                 if (how_many[ticker] !== 0 ){
-                    to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+ticker+"')\">X</span><h2>" + ticker + "</h2>$ " + stock_data[ticker]["price"] + "</br><input type='number' value = '"+ how_many[ticker] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+ticker+"\")'></div>" );      
+                    let views_select = [views_map[views[ticker]].slice(0, 7),' onchange = \"change_view( \''+ ticker + '\', this.options[this.selectedIndex].value)\"', views_map[views[ticker]].slice(7)].join('');
+                    to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+ticker+"')\">X</span><h2>" + ticker + "</h2> <span style = 'color: green'> $" + stock_data[ticker]["price"] + "</span></br><input type='number' value = '"+ how_many[ticker] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+ticker+"\")'>"+views_select+"</div>" );      
                 }
             }
 
@@ -85,13 +98,15 @@ function addStock(item) {
     curr_selected.push(item);
     seen[item] = '';
     let to_show = [];
+    let views_select = [views_map[0].slice(0, 7),' onchange = \"change_view( \''+ item.toString() + '\', this.options[this.selectedIndex].value)\"', views_map[0].slice(7)].join('');
     for (let i = 0; i < curr_selected.length; i++) {
         if (how_many[curr_selected[i]] == 0) {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );    
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );    
         } else {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         }
     }
+
     to_show.sort();
     let argsString = Array.prototype.join.call(to_show, "");
     document.getElementById("portfolio").innerHTML = argsString;
@@ -104,11 +119,12 @@ function removeStock(item){
     delete seen[item];
     how_many[item] = 0;
     let to_show = [];
+    let views_select = [views_map[0].slice(0, 7),' onchange = \"change_view( \''+ item.toString() + '\', this.options[this.selectedIndex].value)\"', views_map[0].slice(7)].join('');
     for (let i = 0; i < curr_selected.length; i++){
         if (how_many[curr_selected[i]] == 0 ){
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         } else {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'></div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         }
     }
     to_show.sort();
@@ -133,8 +149,13 @@ function reset() {
 }
 
 function submit() {
+    let post_data = {
+        'how_many': how_many,
+        'views': views
+    };
+    console.log(post_data)
     $.ajax("/set_portfolio", {
-        data: JSON.stringify(how_many),
+        data: JSON.stringify(post_data),
         contentType: 'application/json',
         type: 'post',
         dataType: 'json',
