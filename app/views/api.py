@@ -102,7 +102,7 @@ def mvo_test():
     if not mu_goal or not cardinality:
         abort(404)
     mu_goal = float(mu_goal)
-    mu_goal = (1 + mu_goal)**(1 / 52) - mu_goal
+    mu_goal = (1 + mu_goal)**(1 / 52) - 1
     cardinality = float(cardinality)
     cov = get_covariance_matrix(TICKERS)
     mu = get_mu_vector()
