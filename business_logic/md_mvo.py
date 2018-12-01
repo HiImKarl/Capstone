@@ -12,7 +12,7 @@ def cov_to_cor(covariances):
         for j in range(covariances.shape[1]):
             correlations[i, j] = covariances[i, j] / (covariances[i, i] * covariances[j, j])
 
-    return correlations.tolist()
+    return correlations
 
 
 def md_mvo(corr, card):
@@ -30,11 +30,8 @@ def md_mvo(corr, card):
         cons.append(cvx.sum(z[:, i]) == 1)
 
     cons.append(cvx.sum(y, axis=0) == card)
-    obj_mat = np.empty((n, n), dtype=np.float64)
-    obj = cvx.Maximize(cvx.sum(np.matmul(corr, z)))
+    obj = cvx.Maximize(cvx.sum(corr * z))
     prob = cvx.Problem(obj, cons)
     prob.solve()
-    return y.value
-
-rho = np.array([[1,-0.2,0.3],[-0.2,1,-0.1],[0.3,-0.1,1]])
-card = 2
+    buckets = np.round(y.value)
+    return buckets

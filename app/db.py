@@ -98,14 +98,14 @@ def init_db():
     db.commit()
 
 
-def get_covariance_matrix():
+def get_covariance_matrix(tickers):
     db = get_db()
-    cov_matrix = np.zeros((len(TICKERS), len(TICKERS)), dtype=np.float64)
-    for i in range(len(TICKERS)):
-        for j in range(len(TICKERS)):
+    cov_matrix = np.zeros((len(tickers), len(tickers)), dtype=np.float64)
+    for i in range(len(tickers)):
+        for j in range(len(tickers)):
             cov = db.execute(
                 'SELECT covariance FROM Covariance WHERE ticker1 = ? AND ticker2 = ?',
-                (TICKERS[i], TICKERS[j], )
+                (tickers[i], tickers[j], )
             ).fetchone()
             cov_matrix[i][j] = cov['covariance']
 

@@ -8,7 +8,7 @@ def variance(x, stats):
     # Q is the covariance matrix
     z = np.array(x)
     z = z[:-1]
-    var = (1/2)*(np.matmul(z, np.matmul(q, np.transpose(z))))
+    var = np.matmul(z, np.matmul(q, np.transpose(z)))
     return var
 
 

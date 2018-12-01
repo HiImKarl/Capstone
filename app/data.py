@@ -181,4 +181,3 @@ def get_asset_data():
 
     return market_cap, prices
 
-

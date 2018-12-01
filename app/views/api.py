@@ -8,7 +8,7 @@ from app.db import (
 from app.data import TICKERS, RISK_FREE, TODAY_DATETIME
 from app.util import first_item_in_list
 from business_logic.black_litterman import black_litterman
-from business_logic.md_mvo import cov_to_cor
+from business_logic.md_mvo import cov_to_cor, md_mvo
 from business_logic.mvo import mvo
 from dateutil.relativedelta import relativedelta
 
@@ -42,7 +42,7 @@ def portfolios():
 # FIXME TESTING
 @bp.route('/black_litterman', methods=('GET',))
 def black_litterman():
-    cov = get_covariance_matrix()
+    cov = get_covariance_matrix(TICKERS)
     mu = get_mu_vector()
     market_caps = get_market_caps()
     rf = RISK_FREE[-1]
@@ -52,8 +52,10 @@ def black_litterman():
 # FIXME TESTING
 @bp.route('/md_mvo', methods=('GET',))
 def md_mvo_test():
-    cor = cov_to_cor(get_covariance_matrix())
-    return jsonify(cor)
+    cardinality = float(request.args.get('cardinality'))
+    cor = cov_to_cor(get_covariance_matrix(TICKERS))
+    buckets = md_mvo(cor, cardinality)
+    return jsonify(buckets.tolist())
 
 
 @bp.route('/back_test_user', methods=('GET',))
@@ -95,15 +97,35 @@ def prices_test():
 # FIXME TESTING
 @bp.route('/mvo', methods=('GET', ))
 def mvo_test():
-    mu_goal = float(request.args.get('mu_goal'))
-    if not mu_goal:
+    mu_goal = request.args.get('mu_goal')
+    cardinality = request.args.get('cardinality')
+    if not mu_goal or not cardinality:
         abort(404)
-    cov = get_covariance_matrix()
+    mu_goal = float(mu_goal)
+    mu_goal = (1 + mu_goal)**(1 / 52) - mu_goal
+    cardinality = float(cardinality)
+    cov = get_covariance_matrix(TICKERS)
     mu = get_mu_vector()
     rf = RISK_FREE[-1]
 
-    portfolio, port_var, port_ret = mvo(cov, mu, mu_goal, rf, 0)
+    cor = cov_to_cor(cov)
+    buckets = md_mvo(cor, cardinality)
+
+    md_tickers = []
+    md_mu = []
+
+    assert len(TICKERS) == len(buckets)
+    for i in range(len(TICKERS)):
+        if buckets[i] == 0:
+            continue
+
+        md_tickers.append(TICKERS[i])
+        md_mu.append(mu[i])
+
+    md_cov = get_covariance_matrix(md_tickers)
+    portfolio, port_var, port_ret = mvo(md_cov, md_mu, mu_goal, rf)
     return jsonify({
+        'tickers': md_tickers,
         'portfolio': portfolio.tolist(),
         'var': port_var,
         'ret': port_ret
