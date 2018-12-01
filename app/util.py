@@ -7,6 +7,11 @@ def arbitrary_value_from_dict(d):
     return next(iter(d.values()))
 
 
+def first_item_in_list(l):
+    assert len(l) > 0
+    return l[0]
+
+
 def limit_list_size(a, length):
     """
     :param a: a list of size n

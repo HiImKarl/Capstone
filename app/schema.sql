@@ -56,6 +56,7 @@ CREATE TABLE PortfolioAsset (
   portfolio_id INTEGER NOT NULL,
   ticker TEXT NOT NULL,
   amount REAL NOT NULL,
+  views INTEGER NOT NULL,
   PRIMARY KEY(portfolio_id, ticker),
   FOREIGN KEY(portfolio_id) REFERENCES Portfolio(portfolio_id),
   FOREIGN KEY(ticker) REFERENCES Asset(ticker)

@@ -41,6 +41,7 @@ def init_db():
                for ticker, price_array in prices.items()]
 
     times = [TODAY_DATETIME - relativedelta(weeks=i) for i in range(len(returns[0]))]
+    times.reverse()
     assert(len(times) == len(returns[0]))
 
     xreturns = np.array(returns, dtype=np.dtype('float'))
@@ -135,6 +136,25 @@ def get_market_caps():
         market_caps[i] = market_cap['market_cap']
 
     return market_caps
+
+
+def get_user_portfolio(user_id):
+    db = get_db()
+    portfolio = db.execute(
+        'SELECT pa.ticker, pa.amount FROM User u '
+        'INNER JOIN Portfolio p ON u.user_id = p.user_id '
+        'INNER JOIN PortfolioAsset pa ON p.portfolio_id = pa.portfolio_id '
+        'WHERE u.user_id = ?',
+        (user_id, )
+    ).fetchall()
+
+    portfolio = [dict(row) for row in portfolio]
+    json_portfolio = {'amount': [], 'ticker': []}
+    for row in portfolio:
+        json_portfolio['ticker'].append(row['ticker'])
+        json_portfolio['amount'].append(row['amount'])
+
+    return json_portfolio
 
 
 def get_prices(start_date, end_date, tickers):

@@ -41,7 +41,8 @@ def preferences():
 @login_required
 def set_portfolio():
     if request.method == 'POST':
-        portfolio = request.json
+        portfolio = request.json['how_many']
+        views = request.json['views']
         print(portfolio)
         db = get_db()
 
@@ -73,16 +74,18 @@ def set_portfolio():
         )
 
         portfolio_id = cursor.lastrowid
-        for ticker, amount in portfolio.items():
+        for ticker in portfolio.keys():
             # FIXME this should realistically never happen
             # with frontend validation
+            amount = portfolio[ticker]
+
             if amount == 0 or amount is None:
                 continue
 
             db.execute(
-                'INSERT INTO PortfolioAsset (portfolio_id, ticker, amount)'
-                'VALUES (?, ?, ?)',
-                (portfolio_id, ticker, amount, )
+                'INSERT INTO PortfolioAsset (portfolio_id, ticker, amount, views)'
+                'VALUES (?, ?, ?, ?)',
+                (portfolio_id, ticker, portfolio[ticker], views[ticker])
             )
 
         db.commit()

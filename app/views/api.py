@@ -2,8 +2,11 @@ import numpy as np
 from flask import (
     Blueprint, abort, request, jsonify, render_template
 )
-from app.db import get_db, get_covariance_matrix, get_mu_vector, get_market_caps, get_prices
+from app.db import (
+    get_db, get_covariance_matrix, get_mu_vector, get_market_caps, get_prices, get_user_portfolio
+)
 from app.data import TICKERS, RISK_FREE, TODAY_DATETIME
+from app.util import first_item_in_list
 from business_logic.black_litterman import black_litterman
 from business_logic.md_mvo import cov_to_cor
 from business_logic.mvo import mvo
@@ -32,22 +35,8 @@ def assets():
 @bp.route('/portfolios', methods=('GET', ))
 def portfolios():
     user_id = request.args.get('user_id')
-    assert(user_id is not None)
-    db = get_db()
-    portfolio = db.execute(
-        'SELECT pa.ticker, pa.amount FROM User u '
-        'INNER JOIN Portfolio p ON u.user_id = p.user_id '
-        'INNER JOIN PortfolioAsset pa ON p.portfolio_id = pa.portfolio_id '
-        'WHERE u.user_id = ?',
-        (user_id, )
-    ).fetchall()
-
-    portfolio = [dict(row) for row in portfolio]
-    json_portfolio = {'amount': [], 'ticker': []}
-    for row in portfolio:
-        json_portfolio['ticker'].append(row['ticker'])
-        json_portfolio['amount'].append(row['amount'])
-    return jsonify(json_portfolio)
+    portfolio = get_user_portfolio(user_id)
+    return jsonify(portfolio)
 
 
 # FIXME TESTING
@@ -67,19 +56,36 @@ def md_mvo_test():
     return jsonify(cor)
 
 
-def back_test_portfolio(portfolio, prices, rebalance=False):
+@bp.route('/back_test_user', methods=('GET',))
+def back_test_user_portfolio():
     """
     n = # of assets
     m = # of data points (weekly)
     :param portfolio: n x 1 np array;
-        for each asset, the 'shares' of the asset in the portfolio
-    :param prices: n x m np array; for each asset, np array of historical prices
-    :param rebalance: Set to True if rebalancing should be enabled
     :return: m x 1 np array; back tested caps of the portfolio
     """
 
     # always backtest using 5 years of data
-    pass
+    user_id = request.args.get('user_id')
+    portfolio = get_user_portfolio(user_id)
+    start_date = TODAY_DATETIME - relativedelta(years=5)
+    print(portfolio)
+    prices_all = get_prices(start_date, TODAY_DATETIME, portfolio['ticker'])
+
+    assert len(prices_all) == len(portfolio['ticker'])
+    assert len(prices_all) == len(portfolio['amount'])
+    market_caps = []
+
+    print(prices_all)
+    print(portfolio['amount'])
+
+    for i in range(len(first_item_in_list(prices_all))):
+        market_cap = 0
+        for j in range(len(prices_all)):
+            market_cap += prices_all[j][i] * portfolio['amount'][j]
+        market_caps.append(market_cap)
+
+    return jsonify(market_caps)
 
 
 # FIXME TESTING
