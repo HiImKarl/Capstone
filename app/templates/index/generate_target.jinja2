@@ -1,47 +1,31 @@
 {% extends "index/base.jinja2" %}
 {% block content %}
 {% block imports %}
+<script src = "{{url_for('static', filename = 'js/generate_target_portfolio.js')}}"></script>
+
 {% endblock %}
 
-<div class="card border-primary mb-4 text-center hoverable" style = "padding: 20px 0">
+<div class="card border-primary mb-4 text-center hoverable" id = "replace" style = "width: 70%; margin: 0 auto; padding: 20px 20px 20px 20px">
   <h1 class="display-4">Welcome to Portfolio Generation</h1>
-  <p class="lead">Here, you can set a target return, number of assets, and a time horizon and we will generate you a portfolio.</p>
+  <p class="lead">Here, you can set a target return and a number of assets; we will generate you a portfolio.</p>
   <hr class="my-4">
-  <p>Fill out the above fields.</p>  
+  <p>Fill out the following fields: Number of Assets and target return in %</p>  
   <form>
     <div class="form-group">
         <label for="exampleFormControlSelect1">Number of Assets desired</label>
         <select class="form-control" id="exampleFormControlSelect1">
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-            <option>13</option>
-            <option>14</option>
         </select>
     </div>
     
     <div class="form-group">
-         <input class = "form-control" type="number" min="1" max="100" id="myPercent"/>
+        <label for="myPercent">Target overall return in %</label>
+         <input class = "form-control" type="number" min="1" max="100" id="myPercent" value = "2"></input>
     </div>
     </form>
     <p class="lead">
-<script>
-    var portfolio_data;
-    function generate_portfolio(){
-        var return_value = parseFloat(document.getElementById("myPercent").value)/100;
-        var assets = parseFloat(document.getElementById("exampleFormControlSelect1").value);
-        console.log('/api/mvo?cardinality=' + assets.toString() + '&mu_goal=' + return_value.toString())
-        $.getJSON('/api/mvo?cardinality=' + assets.toString() + '&mu_goal=' + return_value.toString(), function(data) {
-            portfolio_data = data;
-        }).done(function() {
-            console.log(portfolio_data);
-        })
-    };
-</script>
+
         <a class="btn btn-primary btn-lg" onclick= "generate_portfolio()" role="button"> Generate Target Portfolio</a>
     </p>
 </div>
-
-
 {% endblock %}
 
