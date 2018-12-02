@@ -3,24 +3,22 @@ import scipy.optimize as opt
 
 
 def variance(x, stats):
-    q, mu, mu_goal, rf = stats
+    q, mu, mu_goal = stats
     # X is a row-vector
     # Q is the covariance matrix
     z = np.array(x)
-    z = z[:-1]
     var = np.matmul(z, np.matmul(q, np.transpose(z)))
     return var
 
 
 def ret_goal(x, stats):
-    q, mu, mu_goal, rf = stats
+    q, mu, mu_goal  = stats
 
     # x and mu are row vectors
     z = np.array(x)
 
     # add the risk free return
-    z_mu = np.append(np.array(mu), rf)
-    val = np.matmul(z, np.transpose(z_mu)) - mu_goal
+    val = np.matmul(z, np.transpose(mu)) - mu_goal
     return val
 
 
@@ -28,7 +26,7 @@ def budget(x, data):
     return np.sum(x)-1
 
 
-def mvo(q, mu, mu_goal, rf,  short_selling_bound=-np.inf):
+def mvo(q, mu, mu_goal,  short_selling_bound=-np.inf):
     """
     n = # assets
     :param q: 2d n x n numpy covariance matrix
@@ -41,14 +39,14 @@ def mvo(q, mu, mu_goal, rf,  short_selling_bound=-np.inf):
     """
 
     # arg structure
-    data = [q, mu, mu_goal, rf]
+    data = [q, mu, mu_goal]
 
     # constraint structure
     cons = [{'type': 'eq', 'fun': budget, 'args': (data,)},
             {'type': 'ineq', 'fun': ret_goal, 'args': (data,)}]
     
     # initial guess construction
-    x0 = np.zeros(len(mu)+1)
+    x0 = np.zeros(len(mu))
     x0[0] = 1
 
     # short selling condition
@@ -61,6 +59,6 @@ def mvo(q, mu, mu_goal, rf,  short_selling_bound=-np.inf):
     
     port_var = res.fun
     port_weights = res.x
-    port_ret = np.matmul(np.array(res.x), np.transpose(np.append(mu,rf)))
+    port_ret = np.matmul(np.array(res.x), np.transpose(mu))
     return port_weights, port_var, port_ret
 

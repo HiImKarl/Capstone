@@ -41,15 +41,20 @@ def var_calc(rets, alpha):
 
     new_rets = np.reshape(rets, (new_dim,))
     new_rets.sort()
-
     index = math.ceil(new_dim*alpha)
     var_set = new_rets[(index-1):(index+1)]
     cvar_set = new_rets[0:index]
-
     var = -np.average(var_set)*100
     cvar = -np.average(cvar_set)*100
 
     return var, cvar
+
+
+def p_metrics (x, mu, q, rf):
+    mu_p = np.dot(x, mu)
+    sd_p = math.sqrt(np.matmul(np.matmul(np.transpose(x), q), x))
+    sharpe_p = (mu_p - rf) / sd_p
+    return mu_p, sd_p, sharpe_p
 
 
 # test = monte_carlo(3.79e-02,math.pow(6.15e-03,0.5), 52, 1000)

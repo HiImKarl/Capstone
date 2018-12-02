@@ -125,34 +125,57 @@ def get_mu_vector():
     return mu_vector
 
 
-def get_market_caps():
+def get_market_caps(tickers):
     db = get_db()
-    market_caps = np.zeros((len(TICKERS), ), dtype=np.float64)
-    for i in range(len(TICKERS)):
+    market_caps = np.zeros((len(tickers), ), dtype=np.float64)
+    for i in range(len(tickers)):
         market_cap = db.execute(
             'SELECT market_cap FROM Asset WHERE ticker = ?',
-            (TICKERS[i], )
+            (tickers[i], )
         ).fetchone()
         market_caps[i] = market_cap['market_cap']
 
     return market_caps
 
 
-def get_user_portfolio(user_id):
+def get_views(tickers):
+    db = get_db()
+    views = np.zeros((len(tickers), ), dtype=np.float64)
+    for i in range(len(tickers)):
+        view = db.execute(
+            'SELECT views FROM Asset WHERE ticker = ?',
+            (tickers[i], )
+        ).fetchone()
+        views[i] = view['views']
+
+    return views
+
+
+def get_portfolio_id(user_id):
+    db = get_db()
+    portfolio_id = db.execute(
+        'SELECT portfolio_id FROM Portfolio '
+        'WHERE user_id = ?',
+        (user_id, )
+    ).fetchone()['portfolio_id']
+
+    return portfolio_id
+
+
+def get_portfolio(portfolio_id):
     db = get_db()
     portfolio = db.execute(
-        'SELECT pa.ticker, pa.amount FROM User u '
-        'INNER JOIN Portfolio p ON u.user_id = p.user_id '
-        'INNER JOIN PortfolioAsset pa ON p.portfolio_id = pa.portfolio_id '
-        'WHERE u.user_id = ?',
-        (user_id, )
+        'SELECT ticker, amount, views FROM PortfolioAsset '
+        'WHERE portfolio_id = ?',
+        (portfolio_id, )
     ).fetchall()
 
     portfolio = [dict(row) for row in portfolio]
-    json_portfolio = {'amount': [], 'ticker': []}
+    json_portfolio = {'amount': [], 'ticker': [], 'views': []}
     for row in portfolio:
         json_portfolio['ticker'].append(row['ticker'])
         json_portfolio['amount'].append(row['amount'])
+        json_portfolio['views'].append(row['views'])
 
     return json_portfolio
 
@@ -183,6 +206,25 @@ def get_prices(start_date, end_date, tickers):
         assert len(prices) == len(prices_all[0])
 
     return np.array(prices_all)
+
+
+def get_returns(tickers):
+    """
+    n = # of assets
+    m = # of data points
+    :return: n x m np array; for each asset, the returns
+    """
+    db = get_db()
+    returns = np.zeros((len(tickers), ), dtype=np.float64)
+    for i in range(len(tickers)):
+        db_return = db.execute(
+            'SELECT average_return FROM Asset '
+            'WHERE ticker = ?',
+            (tickers[i], )
+        ).fetchone()
+        returns[i] = db_return['average_return']
+
+    return returns
 
 
 @click.command('init-db')

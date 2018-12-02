@@ -23,13 +23,6 @@ def bl_pi(mkt_cap, mu, q, rf):
     return rav_coeff * np.matmul(q, x_mkt)
 
 
-# generates view matrices and vectors for us
-def view_gen(mu):
-    view_matrix = np.zeros((1, len(mu)), dtype=np.float64)
-    view_matrix[0, 0] = 1
-    return view_matrix, np.dot(view_matrix, mu) * 2
-
-
 # with views done, now need omega
 def omega_gen(p, q, tau):
     omega = []
@@ -46,13 +39,12 @@ def omega_gen(p, q, tau):
 
 # need a function to compute the combined return vector
 # for now use K, where K is the number of views need
-def bl_cr(mkt_cap, mu, q, rf, tau):
+def bl_cr(mkt_cap, mu, q, rf, views, tau):
     pi = bl_pi(mkt_cap, mu, q, rf)
-    print("pi: ", pi)
-    view_matrix, view_vector = view_gen(mu)
+    view_matrix = np.identity(len(mu), dtype=np.float64)
+    view_vector = mu * views
     omega = omega_gen(view_matrix, q, tau)
     x1 = np.linalg.inv(tau * q)
-    print(view_matrix)
     x2 = np.matmul(np.matmul(view_matrix.transpose(), np.linalg.inv(omega)), view_matrix)
     x3 = np.linalg.inv(x1 + x2)
     x4 = np.matmul(x1, pi)
@@ -68,19 +60,18 @@ def bl_weights_normalized(returns, rac, q):
 
 # put everything together to make a function
 # need rets, factors, risk free and market cap probably
-def black_litterman(mu, q, rf, mkt_cap, tau=0.02):
+def black_litterman(mu, q, rf, mkt_cap, views, tau=0.02):
     """
     Where n = # assets, m = # periods
     :param mu:  n x 1
     :param q:   n x n
     :param rf:  1 x 1
     :param mkt_cap: n x 1
+    :param views: investor views
     :param tau: [0.01, 0.05]
     :return: n x 1 portfolio weights
     """
-    print("rf: ", rf)
-    print(mu)
     rac = bl_lambda(mkt_cap, mu, q, rf)
-    cr = bl_cr(mkt_cap, mu, q, rf, tau)
+    cr = bl_cr(mkt_cap, mu, q, rf, views, tau)
     w = bl_weights_normalized(cr, rac, q)
     return w

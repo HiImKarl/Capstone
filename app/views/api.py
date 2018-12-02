@@ -1,15 +1,18 @@
 import numpy as np
+import math
 from flask import (
     Blueprint, abort, request, jsonify, render_template
 )
 from app.db import (
-    get_db, get_covariance_matrix, get_mu_vector, get_market_caps, get_prices, get_user_portfolio
+    get_db, get_covariance_matrix, get_mu_vector, get_views, get_portfolio_id,
+    get_market_caps, get_prices, get_portfolio, get_returns
 )
 from app.data import TICKERS, RISK_FREE, TODAY_DATETIME
 from app.util import first_item_in_list
 from business_logic.black_litterman import black_litterman
 from business_logic.md_mvo import cov_to_cor, md_mvo
 from business_logic.mvo import mvo
+from business_logic.var import p_metrics
 from dateutil.relativedelta import relativedelta
 
 bp = Blueprint('api', __name__, url_prefix='/api')
@@ -35,13 +38,14 @@ def assets():
 @bp.route('/portfolios', methods=('GET', ))
 def portfolios():
     user_id = float(request.args.get('user_id'))
-    portfolio = get_user_portfolio(user_id)
+    portfolio_id = get_portfolio_id(user_id)
+    portfolio = get_portfolio(portfolio_id)
     return jsonify(portfolio)
 
 
 # FIXME TESTING
 @bp.route('/black_litterman', methods=('GET',))
-def black_litterman():
+def black_litterman_test():
     cov = get_covariance_matrix(TICKERS)
     mu = get_mu_vector()
     market_caps = get_market_caps()
@@ -94,6 +98,52 @@ def prices_test():
     return jsonify(prices_all.tolist())
 
 
+def map_view(view):
+    if view == -2:
+        return 1.2
+    elif view == -1:
+        return 1.1
+    elif view == 0:
+        return 1.0
+    elif view == 1:
+        return 0.9
+    elif view == 2:
+        return 0.8
+    else:
+        assert 0
+
+
+@bp.route('/improve_portfolio', methods=('GET', ))
+def improve_portfolio():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        abort(404)
+
+    user_id = int(user_id)
+    portfolio_id = get_portfolio_id(user_id)
+    portfolio = get_portfolio(portfolio_id)
+    tickers = portfolio['ticker']
+    returns = get_returns(tickers)
+    views = portfolio['views']
+
+    market_caps = get_market_caps(tickers)
+    cov = get_covariance_matrix(tickers)
+    risk_free_rate = RISK_FREE[-1]
+    views = [map_view(view) for view in views]
+
+    portfolio = black_litterman(returns, cov, risk_free_rate, market_caps, views)
+    mu_p, sd_p, sharpe_p = p_metrics(portfolio, views * returns, cov, risk_free_rate)
+    return jsonify(
+        {
+            'ticker': tickers,
+            'weights': portfolio.tolist(),
+            'return': mu_p,
+            'sigma': sd_p,
+            'sharpe_p': sharpe_p
+        }
+    )
+
+
 # FIXME TESTING
 @bp.route('/mvo', methods=('GET', ))
 def mvo_test():
@@ -124,9 +174,13 @@ def mvo_test():
 
     md_cov = get_covariance_matrix(md_tickers)
     portfolio, port_var, port_ret = mvo(md_cov, md_mu, mu_goal, rf)
+
+    port_ret = (1 + port_ret)**52 - 1
+    sigma = math.pow(52 * port_var, 0.5)
+
     return jsonify({
         'tickers': md_tickers,
         'portfolio': portfolio.tolist(),
-        'var': port_var,
+        'sigma': sigma,
         'ret': port_ret
     })
