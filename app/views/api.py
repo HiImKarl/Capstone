@@ -73,7 +73,8 @@ def back_test_user_portfolio():
 
     # always backtest using 5 years of data
     user_id = float(request.args.get('user_id'))
-    portfolio = get_user_portfolio(user_id)
+    portfolio_id = get_portfolio_id(user_id)
+    portfolio = get_portfolio(portfolio_id)
     start_date = TODAY_DATETIME - relativedelta(years=5)
     prices_all = get_prices(start_date, TODAY_DATETIME, portfolio['ticker'])
 
