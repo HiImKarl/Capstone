@@ -17,8 +17,8 @@ function generate_better(user_id){
                 for (let i = 0; i < data['ticker'].length; i++){
                     better_portfolio[data['ticker'][i]] = data['weights'][i];
                 }
-                let get_request = { 'tickers': data['ticker'], 'weights': data['weights']};
-                $.getJSON('/api/back_test_portfolio', get_request, function(data) {
+                let get_request = JSON.stringify({ 'tickers': data['ticker'], 'weights': data['weights']});
+                $.getJSON('/api/back_test_rebalancing_portfolio', get_request, function(data) {
                     console.log(data);
                 })
                 display_both_portfolios(chart_data, better_portfolio, user_id);
@@ -105,7 +105,12 @@ function backtest(user_id) {
     if (confirm("Are you sure you want to backtest?")){
         document.getElementsByClassName("tooltip-inner")[0].style.display = "None";
         document.getElementsByClassName("arrow")[0].style.display = "None";
-        $.getJSON('/api/back_test_user?user_id='+ user_id, function(data) {
+        var get_request = {};
+        $.getJSON('/api/portfolios?user_id='+user_id, function(data){
+            get_request['weights'] = data['amount'];
+            get_request['tickers'] = data['ticker'];
+        }).done(function(){
+        $.getJSON('/api/back_test_portfolio', JSON.stringify(get_request), function(data) {
             chart_data = data;
         }).done(function() {
             document.getElementById("card-page").innerHTML = "<canvas id = 'myChart'></canvas>";
@@ -162,6 +167,6 @@ function backtest(user_id) {
                 }
             });
         });
+    })
     };
 }
-
