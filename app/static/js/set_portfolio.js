@@ -1,3 +1,4 @@
+//scoped variables for this
 let curr_selected = [];
 let seen = {};
 let how_many = {};
@@ -10,9 +11,8 @@ views_map[0] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bulli
 views_map[1] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option value='0'>Neutral</option><option selected = \"selected\" value='1'>Bearish</option><option value = '2'>Very Bearish </option></select>";
 views_map[2] = "<select style = 'margin-top: 10px'><option value='-2'>Very Bullish</option><option value='-1'>Bullish</option><option selected = \"selected\" value='0'>Neutral</option><option value='1'>Bearish</option><option value = '2' selected = \"selected\">Very Bearish </option></select>";
 
-// -2, -1, 0, -1, -2
+// map our views to: -2, -1, 0, -1, -2 views_map and then set the views to POST to server
 function change_view(item, view){
-    console.log(item, view);
     views[item] = parseInt(view);
 }
 
@@ -86,7 +86,7 @@ function filterFunction() {
     let div = document.getElementById("myDropdown");
     a = div.getElementsByTagName("li");
     for (i = 0; i < a.length; i++) {
-        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+        if (a[i].innerHTML.toUpperCase().startsWith(filter)) {
             a[i].style.display = "";
         } else {
             a[i].style.display = "none";
@@ -153,7 +153,6 @@ function submit() {
         'how_many': how_many,
         'views': views
     };
-    console.log(post_data)
     $.ajax("/set_portfolio", {
         data: JSON.stringify(post_data),
         contentType: 'application/json',

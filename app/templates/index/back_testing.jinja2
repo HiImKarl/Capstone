@@ -4,6 +4,7 @@
 {% endblock %}
 <script src = "{{url_for('static', filename = 'js/back_testing.js')}}"></script>
 <script>
+
 var stock_data = {}
 var tickers = [];
 var amounts = [];
@@ -17,6 +18,7 @@ function getRandomColor() {
     }
     return color;
 }
+
 function on_load(user_id){
     $.getJSON('/api/portfolios?user_id=' + user_id, function(data){
         amounts = data['amount'];
@@ -65,11 +67,10 @@ function on_load(user_id){
             }
         });     
     });
-    
 }
 </script>
 
-<div class="card text-center" style = "width: 70%; margin: 0 auto; padding: 20px 0; ">
+<div class="card text-center" id = "card-page" style = "width: 70%; margin: 0 auto; padding: 20px 0; ">
     <div class = "card-header bg-light" style = "height: 15px !important"></div>
     <h3 style = "margin-top: 20px;"class="card-title">Your Current Portfolio of Assets</h3>
     <div style = "display: flex !important;justify-content: center; box-shadow: 0 !important;margin-bottom: 15px !important; padding: 20px 0;">
@@ -86,8 +87,8 @@ function on_load(user_id){
     <div style = "margin-bottom: 20px;">
         <a style = "width: 50%" href="{{url_for('index.set_portfolio')}}" class="btn btn-info">Edit Portfolio</a>
         {# pass in scoped current portfolio along with time window from input to backtest #}
-        <a style = "width: 50%"  class="btn btn-danger">Backtest your portfolio on this time interval</a>
-        <a style = "width: 50%"  class="btn btn-success">Generate a better portfolio on this time interval</a>
+        <a style = "width: 50%"  class="btn btn-danger" onclick = "backtest({{g.user['user_id']}})">Backtest your portfolio on this time interval</a>
+        <a style = "width: 50%"  class="btn btn-success" onclick = "generate_better({{g.user['user_id']}})">Generate a better portfolio on this time interval</a>
     
     </div>
     <div style = "height: 25px" class = "card-footer text-muted"></div>

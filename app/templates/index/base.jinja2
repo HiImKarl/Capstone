@@ -5,6 +5,7 @@
 {% endblock %}
 {% block navbar %}
 {# is the base file that everything in the index folder follows: a common navbar #}
+<title>Money Rocket</title>
 <nav class="main navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 10px;">
   <a class="navbar-brand" href="{{ url_for('index.about') }}"><i class="fa fa-rocket" style = "margin-right: 5px;"></i> Money Rocket</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +26,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{{ url_for('index.back_testing') }}">Backtest Your Portfolio</a>
-          <a class="dropdown-item" href="{{url_for('index.generate_better')}}">Generate a better Portfolio</a>
+          <a class="dropdown-item" href="{{url_for('index.back_testing')}}">Generate a better Portfolio</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{url_for('index.generate_target')}}">Generate a Portfolio with a certain return</a>
         </div>

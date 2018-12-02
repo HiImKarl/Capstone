@@ -1,6 +1,5 @@
 var stock_data = {}
 function on_load(user_id){
-    console.log('loaded');
     $.getJSON('/api/portfolios?user_id' + user_id, function(data){
         let amounts = data['amount'];
         let tickers = data['ticker'];
@@ -13,9 +12,7 @@ function on_load(user_id){
     for (ticker in stock_data){
         list.push("<li class = 'list-item'>"+ ticker + " (amount: " + stock_data[ticker]+")"+"</li>" )
     };
-    console.log(list);
     let argsString = list.join('');
     let ul = document.getElementById('toadd');
     ul.innerHTML = argsString;
-
 }
