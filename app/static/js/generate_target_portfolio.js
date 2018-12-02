@@ -30,7 +30,6 @@ function card(title, info, description){
 }
 
 function generate_portfolio(){
-    console.log('generating');
     var return_value = parseFloat(document.getElementById("myPercent").value)/100;
     var assets = parseFloat(document.getElementById("exampleFormControlSelect1").value);
     $.getJSON('/api/assets', function(data) {
