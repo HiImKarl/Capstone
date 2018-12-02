@@ -14,8 +14,8 @@
     </div>
     {# video format and click down #}
     <div class="step-content one">
-      <video id = "vid1" height = "460px" width = "100%" controls>
-        <source src="{{ url_for('static', filename = 'assets/tut1.mp4')}}" type="video/mp4">
+      <video id = "vid1" height = "420px" width = "100%" controls>
+        <source src="{{ url_for('static', filename = 'assets/tut1final.mp4')}}" type="video/mp4">
       </video>
       <button class="next-btn btn-one">Next</button>
     </div>
@@ -26,7 +26,10 @@
       <div class="subheader">Now that our portfolio is set, we are ready to backtest our Portfolio.</div>
     </div>
     <div class="step-content two">
-      <button class="next-btn">Next</button>
+      <video id = "vid2" height = "420px" width = "100%" controls>
+        <source src="{{ url_for('static', filename = 'assets/tutorial2.mp4')}}" type="video/mp4">
+      </video>
+      <button class="next-btn" id = "btn-two">Next</button>
     </div>
   </div>
   <div class="step minimized">
@@ -35,7 +38,7 @@
       <div class="subheader">We can choose a time range to test our set_portfolio on.</div>
     </div>
     <div class="step-content three">
-      <button class="next-btn">Next</button>
+      <button class="next-btn" id = "btn-three">Next</button>
     </div>
   </div>
   <div class="step minimized">
@@ -44,7 +47,7 @@
       <div class="subheader">This portfolio will have the lowest variance, and a target return on a time period .</div>
     </div>
     <div class="step-content four">
-      <button class="close-btn">Close</button>
+      <button class="close-btn" id = "btn-four">Close</button>
     </div>
   </div>
 </div>

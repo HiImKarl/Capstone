@@ -1,9 +1,28 @@
 window.onload = function () {
-  var video = document.getElementsByTagName('video')[0];
-  video.onended = function(e) {
+  var videos = document.getElementsByTagName('video')
+  var video1 = videos[0];
+  var video2 = videos[1];
+  var video3 = videos[2];
+  var video4 = videos[3];
+  document.getElementById('btn-two').style.display = 'None';
+  document.getElementById('btn-three').style.display = 'None';
+  document.getElementById('btn-four').style.display = 'None';
+
+  video1.onended = function(e) {
     var button = document.getElementsByClassName("btn-one")[0]
     button.style.display = "block";
-
+  }
+  video2.onended = function(e){
+    var button = document.getElementById("btn-two");
+    button.style.display = "block";
+  }
+  video3.onended = function(e){
+    var button = document.getElementById("btn-three");
+    button.style.display = "block";
+  }
+  video4.onended = function(e){
+    var button = document.getElementById("btn-four");
+    button.style.display = "block";
   }
 };
 

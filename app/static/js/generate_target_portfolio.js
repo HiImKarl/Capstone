@@ -1,5 +1,5 @@
 var portfolio_data;
-
+var stock_prices = {};
 $(window).on('load', function(){
     let field = document.getElementById("exampleFormControlSelect1");
     let res = '';
@@ -33,6 +33,14 @@ function generate_portfolio(){
     console.log('generating');
     var return_value = parseFloat(document.getElementById("myPercent").value)/100;
     var assets = parseFloat(document.getElementById("exampleFormControlSelect1").value);
+    $.getJSON('/api/assets', function(data) {
+        let tickers = data['tickers'];
+        let prices = data['prices'];
+        for (let i = 0; i < tickers.length; ++i) {
+            stock_prices[tickers[i]] = prices[i];
+        }
+        })
+    .done(function(){
     $.getJSON('/api/mvo?cardinality=' + assets.toString() + '&mu_goal=' + return_value.toString(), function(data) {
         portfolio_data = data;
     }).done(function() {
@@ -41,7 +49,10 @@ function generate_portfolio(){
         
         let arr = ["<div class=\"card-header\">Ticker in Portfolio: Number of Asset</div>"];
         for (let i = 0; i < portfolio_data['portfolio'].length; i++){
-            arr.push("<li class=\"list-group-item\">"+ portfolio_data['tickers'][i].toString() + " (amount: " + portfolio_data['portfolio'][i].toString()+")</li>" );
+            
+            let ticker = portfolio_data['tickers'][i];
+            let amount = portfolio_data['portfolio'][i];
+            arr.push("<li class=\"list-group-item\">"+ ticker + " [amount: " + amount+"] ($"+ (stock_prices[ticker]*amount).toString()+")</li>" );
         };
 
         var args_String = arr.join('');
@@ -49,13 +60,11 @@ function generate_portfolio(){
         doc.style = "padding: 20px 0 !important; margin-bottom: 0;"
         let stats = [];
         for (header in portfolio_data){
-            console.log(header);
             switch (header){
                 case "ret":
-                    stats.push(card("Average Weekly Return of Portfolio", (portfolio_data[header]*100).toString() + "%", "The higher, the better. This tells you how much your portfolio is increasing/decreasing every week."));
+                    stats.push(card("Average Yearly Return of Portfolio", (portfolio_data[header]*100).toString() + "%", "The higher, the better. This tells you how much your portfolio is increasing/decreasing every week."));
                     continue;
                 case "sigma":
-                    console.log('wtf');
                     stats.push(card("Sigma of Portfolio", portfolio_data[header] + "%", "The standard deviation of this Portfolio. The higher, the more risky and unpredictable the portfolio."));
                     continue;
                 default:
@@ -67,6 +76,14 @@ function generate_portfolio(){
         var colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"];
         for (let i = 5; i < arr.length; i++){
             colors.push(getRandomColor());
+        }
+        labels = [];
+        for (let i = 0; i < portfolio_data['tickers'].length; i++){
+            if (portfolio_data['portfolio'][i]>0){
+                labels.push(portfolio_data['tickers'][i]);
+            } else {
+                label.push('['+portfolio_data['tickers'][i]+']');
+            }
         }
         new Chart(document.getElementById("doughnut-chart"), {
             type: 'doughnut',
@@ -96,4 +113,5 @@ function generate_portfolio(){
             }
         });
     })
+})
 };

@@ -9,9 +9,11 @@ var stock_data = {}
 var tickers = [];
 var amounts = [];
 var better = {};
-var sharpe = 0;
-var sigma = 0;
-var return_val = 0;
+var shorted_tickers = [];
+var stock_prices = {};
+$(document).ready = (function(){
+        ;
+    });
 $(document).ready = on_load({{g.user['user_id']}});
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -23,20 +25,32 @@ function getRandomColor() {
 }
 
 function on_load(user_id){
+    $.getJSON('/api/assets', function(data) {
+        let tickers = data['tickers'];
+        let prices = data['prices'];
+        for (let i = 0; i < tickers.length; ++i) {
+            stock_prices[tickers[i]] = prices[i];
+        }
+        })
+    .done(function(){
     $.getJSON('/api/portfolios?user_id=' + user_id, function(data){
         amounts = data['amount'];
         tickers = data['ticker'];
+        
         for (let i = 0; i < amounts.length; i++){
             stock_data[tickers[i]] = amounts[i];
+            if (amounts[i]>0){
+                shorted_tickers.push(tickers[i]);
+            } else {
+                shorted_tickers.push('['+tickers[i]+']');
+            }
         }
     }).done(function (){
-        let arr = [];
-        arr.sort();
-        console.log(stock_data);
-        for (ticker in stock_data){
-            arr.push("<li class=\"list-group-item\">"+ ticker + " (amount: " + stock_data[ticker]+")</li>" );
-        };
+        let arr = ["<div class=\"card-header\">Ticker in Portfolio: [Number of Asset] (Value $USD)</div>"];
 
+        for (ticker in stock_data){
+            arr.push("<li class=\"list-group-item\">"+ ticker + " [amount: " + stock_data[ticker]+"] ($"+ (stock_prices[ticker]*stock_data[ticker]).toString()+")</li>" );
+        };
         var args_String = arr.join('');
         document.getElementById('lol').innerHTML = args_String;
         var colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"];
@@ -46,7 +60,7 @@ function on_load(user_id){
         new Chart(document.getElementById("doughnut-chart"), {
             type: 'doughnut',
             data: {
-            labels: tickers,
+            labels: shorted_tickers,
             datasets: [
                 {
                 label: "Value $(USD)",
@@ -59,7 +73,7 @@ function on_load(user_id){
                 responsive: false,
                 title: {
                     display: true,
-                    text: 'Distribution of Assets in your Portfolio'
+                    text: 'Distribution of Assets in your Portfolio (brackets indicates shorted asset)'
                 },
                 legend: {
                     display: true,
@@ -70,6 +84,7 @@ function on_load(user_id){
                 }
             }
         });     
+    });
     });
 };
 </script>
