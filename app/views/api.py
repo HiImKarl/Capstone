@@ -132,7 +132,10 @@ def improve_portfolio():
     views = [map_view(view) for view in views]
 
     portfolio = black_litterman(returns, cov, risk_free_rate, market_caps, views)
-    mu_p, sd_p, sharpe_p = p_metrics(portfolio, views * returns, cov, risk_free_rate)
+    mu_p, sd_p = p_metrics(portfolio, views * returns, cov)
+    mu_p = (1 + mu_p)**52 - 1
+    sd_p *= math.pow(52, 0.5)
+    sharpe_p = (mu_p - risk_free_rate) / sd_p
     return jsonify(
         {
             'ticker': tickers,

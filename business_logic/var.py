@@ -50,11 +50,10 @@ def var_calc(rets, alpha):
     return var, cvar
 
 
-def p_metrics (x, mu, q, rf):
+def p_metrics (x, mu, q):
     mu_p = np.dot(x, mu)
     sd_p = math.sqrt(np.matmul(np.matmul(np.transpose(x), q), x))
-    sharpe_p = (mu_p - rf) / sd_p
-    return mu_p, sd_p, sharpe_p
+    return mu_p, sd_p
 
 
 # test = monte_carlo(3.79e-02,math.pow(6.15e-03,0.5), 52, 1000)
