@@ -213,7 +213,7 @@ def back_test_portfolio():
     # always backtest using 5 years of data
     start_date = TODAY_DATETIME - relativedelta(years=5)
     prices_all = get_prices(start_date, TODAY_DATETIME, tickers)
-    shares = [weights[j] / prices_all[j][0] for j in range(len(weights))]
+    shares = [float(weights[j]) / prices_all[j][0] for j in range(len(weights))]
 
     assert len(prices_all) == len(tickers)
     assert len(prices_all) == len(shares)
