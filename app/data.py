@@ -17,7 +17,7 @@ INTRINIO_URL_BASE = 'https://api.intrinio.com/'
 KIBOT_URL_BASE = 'http://api.kibot.com/'
 
 # start end dates in datetime format
-TODAY_DATETIME = datetime.datetime.now()
+TODAY_DATETIME = datetime.datetime.strptime('2018-10-26', '%Y-%m-%d')
 PAST_DATETIME = datetime.datetime.now() - relativedelta(years=10)
 
 with open('data/stock_tickers.csv', 'r') as f:
@@ -101,6 +101,7 @@ def kibot_historical_price(ticker):
 
     content = requests.get(url=KIBOT_URL_BASE, params=params).content.decode('utf-8')
     content = csv.reader(io.StringIO(content))
+
     # data is given from earliest to latest, which is what we want
     # column 4 is the adjusted_close price
 

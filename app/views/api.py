@@ -5,7 +5,7 @@ from flask import (
 )
 from app.db import (
     get_db, get_covariance_matrix, get_mu_vector, get_portfolio_id,
-    get_market_caps, get_prices, get_portfolio, get_returns
+    get_market_caps, get_prices, get_portfolio, get_returns, get_current_prices
 )
 from app.data import TICKERS, RISK_FREE, TODAY_DATETIME, FF_FACTORS
 from app.util import first_item_in_list, limit_list_size
@@ -19,6 +19,7 @@ from business_logic.farma_french import (
 from dateutil.relativedelta import relativedelta
 
 bp = Blueprint('api', __name__, url_prefix='/api')
+MONTE_CARLO_SIMULATIONS = 1000
 
 
 @bp.route('/assets', methods=('GET', ))
@@ -37,15 +38,61 @@ def assets():
     )
 
 
-# FIXME SECURITY ISSUE
 @bp.route('/portfolios', methods=('GET', ))
 def portfolios():
-    user_id = float(request.args.get('user_id'))
-    portfolio_id = get_portfolio_id(user_id)
+    user_id = request.args.get('user_id')
+    if user_id is None:
+        abort(404)
+    portfolio_id = get_portfolio_id(float(user_id))
     if portfolio_id is None:
         return jsonify({})
     portfolio = get_portfolio(portfolio_id)
     return jsonify(portfolio)
+
+
+@bp.route('/portfolio_statistics', methods=('GET',))
+def portfolio_statistics():
+    user_id = request.args.get('user_id')
+    if user_id is None:
+        abort(404)
+    portfolio_id = get_portfolio_id(user_id)
+    portfolio = get_portfolio(portfolio_id)
+    tickers = portfolio['ticker']
+    amounts = portfolio['amount']
+    returns = get_returns(tickers)
+    print(returns)
+    covariance = get_covariance_matrix(tickers)
+    prices = get_current_prices(tickers)
+
+    total_value = 0
+    for i in range(len(amounts)):
+        total_value += amounts[i] * prices[i]
+
+    weights = [(amounts[i] * prices[i]) / total_value
+               for i in range(len(amounts))]
+
+    mu_p = 0
+    for i in range(len(weights)):
+        mu_p += weights[i] * returns[i]
+
+    weights = np.array(weights, dtype=np.float64)
+    covariance = np.array(covariance, dtype=np.float64)
+
+    cov_p = np.matmul(np.matmul(np.transpose(weights), covariance), weights)
+    cov_p *= math.pow(52, 0.5)
+    monte_carlo_simulations = monte_carlo(mu_p, cov_p, 52, MONTE_CARLO_SIMULATIONS)
+    var, cvar = var_calc(monte_carlo_simulations, 0.01)
+
+    mu_p = (1 + mu_p)**52 - 1
+    sharpe_ratio = (mu_p - RISK_FREE[-1]) / cov_p
+
+    return jsonify({
+        'sigma': cov_p,
+        'sharpe_ratio': sharpe_ratio,
+        'ret': mu_p,
+        'var': var,
+        'cvar': cvar
+    })
 
 
 # FIXME TESTING
@@ -274,13 +321,17 @@ def improve_portfolio():
     mu_p = (1 + mu_p)**52 - 1
     sd_p *= math.pow(52, 0.5)
     sharpe_p = (mu_p - risk_free_rate) / sd_p
+    monte_carlo_simulations = monte_carlo(mu_p, sd_p, 52, MONTE_CARLO_SIMULATIONS)
+    var, cvar = var_calc(monte_carlo_simulations, 0.01)
     return jsonify(
         {
             'ticker': tickers,
             'weights': portfolio.tolist(),
             'return': mu_p,
             'sigma': sd_p,
-            'sharpe_p': sharpe_p
+            'sharpe_ratio': sharpe_p,
+            'var': var,
+            'cvar': cvar
         }
     )
 
@@ -320,7 +371,7 @@ def get_mvo():
     port_ret = (1 + port_ret)**52 - 1
     sigma = math.pow(52 * port_var, 0.5)
     # 1000 simulations with
-    monte_carlo_simulations = monte_carlo(port_ret, sigma, 52, 1000)
+    monte_carlo_simulations = monte_carlo(port_ret, sigma, 52, MONTE_CARLO_SIMULATIONS)
     var, cvar = var_calc(monte_carlo_simulations, 0.01)
 
     return jsonify({

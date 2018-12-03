@@ -180,6 +180,20 @@ def get_portfolio(portfolio_id):
     return json_portfolio
 
 
+def get_current_prices(tickers):
+    db = get_db()
+    prices = []
+    for ticker in tickers:
+        price = db.execute(
+            'SELECT price FROM Asset '
+            'WHERE ticker = ?',
+            (ticker, )
+        ).fetchone()
+        prices.append(price['price'])
+
+    return prices
+
+
 def get_prices(start_date, end_date, tickers):
     """
     n = # of assets
