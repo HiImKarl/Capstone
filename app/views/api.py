@@ -318,6 +318,8 @@ def improve_portfolio():
 
     portfolio = black_litterman(returns, cov, risk_free_rate, market_caps, views)
     mu_p, sd_p = p_metrics(portfolio, views * returns, cov)
+    print(mu_p)
+    print(returns)
     mu_p = (1 + mu_p)**52 - 1
     print(mu_p)
     sd_p *= math.pow(52, 0.5)

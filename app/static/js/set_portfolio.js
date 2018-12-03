@@ -41,7 +41,7 @@ function on_load(user_id){
             for (let ticker in how_many){
                 if (how_many[ticker] !== 0 ){
                     let views_select = [views_map[views[ticker]].slice(0, 7),' onchange = \"change_view( \''+ ticker + '\', this.options[this.selectedIndex].value)\"', views_map[views[ticker]].slice(7)].join('');
-                    to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+ticker+"')\">X</span><h2>" + ticker + "</h2> <span style = 'color: green'> $" + stock_data[ticker]["price"] + "</span></br><input type='number' value = '"+ how_many[ticker] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+ticker+"\")'>"+views_select+"</div>" );      
+                    to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+ticker+"')\">X</span><h2>" + ticker + "</h2> <span style = 'color: green'> $" + Math.round(stock_data[ticker]["price"]*100)/100 + "</span></br><input type='number' value = '"+ how_many[ticker] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+ticker+"\")'>"+views_select+"</div>" );      
                 }
             }
 
@@ -101,9 +101,9 @@ function addStock(item) {
     let views_select = [views_map[0].slice(0, 7),' onchange = \"change_view( \''+ item.toString() + '\', this.options[this.selectedIndex].value)\"', views_map[0].slice(7)].join('');
     for (let i = 0; i < curr_selected.length; i++) {
         if (how_many[curr_selected[i]] == 0) {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );    
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + Math.round(100*stock_data[curr_selected[i]]["price"])/100 + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );    
         } else {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$ " + Math.round(100*stock_data[curr_selected[i]]["price"])/100 + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         }
     }
 
@@ -122,9 +122,9 @@ function removeStock(item){
     let views_select = [views_map[0].slice(0, 7),' onchange = \"change_view( \''+ item.toString() + '\', this.options[this.selectedIndex].value)\"', views_map[0].slice(7)].join('');
     for (let i = 0; i < curr_selected.length; i++){
         if (how_many[curr_selected[i]] == 0 ){
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + Math.round(100*stock_data[curr_selected[i]]["price"])/100 + "</br><input type='number' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         } else {
-            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + stock_data[curr_selected[i]]["price"] + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
+            to_show.push("<div class = 'stock' ><span class='close' onClick = \"removeStock('"+curr_selected[i].toString()+"')\">X</span><h2>" + curr_selected[i] + "</h2>$" + Math.round(100*stock_data[curr_selected[i]]["price"])/100 + "</br><input type='number' value = '"+ how_many[curr_selected[i]] + "' placeholder = '# shares' onKeyUp= 'updateAmount(this.value, \""+curr_selected[i].toString()+"\")'>"+views_select+"</div>" );
         }
     }
     to_show.sort();

@@ -8,6 +8,13 @@
     -o-animation: fadein 0.5s; /* Opera < 12.1 */
     animation: fadein 0.5s;
 }
+.stats_card{
+    width: 15% !important;
+}
+.card {
+    box-shadow: None !important;
+}
+
 div.tablewrapper {
     overflow:hidden;
     overflow-y: scroll;
