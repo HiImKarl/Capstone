@@ -159,6 +159,6 @@ function submit() {
         type: 'post',
         dataType: 'json',
         async: true,
-    }).done(alert("Successfully submitted portfolio!"));
+    }).done();
 }
 

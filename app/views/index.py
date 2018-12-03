@@ -43,7 +43,6 @@ def set_portfolio():
     if request.method == 'POST':
         portfolio = request.json['how_many']
         views = request.json['views']
-        print(portfolio)
         db = get_db()
 
         # FIXME limiting to one portfolio
@@ -56,7 +55,6 @@ def set_portfolio():
         ).fetchall()
 
         for row in portfolio_ids:
-            print(row['portfolio_id'])
             db.execute(
                 'DELETE FROM PortfolioAsset WHERE portfolio_id = ?',
                 (row['portfolio_id'], )
@@ -104,17 +102,4 @@ def generate_better():
 @login_required
 def generate_target():
     return render_template('index/generate_target.jinja2')
-
-
-@bp.before_request
-def load_stocks():
-    session['tickers'] = STOCK_TICKERS
-    prices = []
-    db = get_db()
-    for TICKER in STOCK_TICKERS:
-        price = db.execute(
-            'SELECT price FROM Asset WHERE ticker = ?', (TICKER, )
-        ).fetchone()
-        prices.append(price['price'])
-    session['prices'] = prices
 

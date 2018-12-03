@@ -12,7 +12,7 @@ from app.util import first_item_in_list, limit_list_size
 from business_logic.black_litterman import black_litterman
 from business_logic.md_mvo import cov_to_cor, md_mvo
 from business_logic.mvo import mvo
-from business_logic.var import p_metrics
+from business_logic.var import p_metrics, monte_carlo
 from business_logic.farma_french import (
     ff3_cov_est, ff3_return_estimates, ff3_ols
 )
@@ -202,25 +202,25 @@ def back_test_portfolio():
     :return: m x 1 np array; back tested caps of the portfolio
     This will not perform rebalancing
     """
-    amounts = request.args.getlist('weights[]')
+    weights = request.args.getlist('weights[]')
     tickers = request.args.getlist('tickers[]')
 
-    if amounts is None or tickers is None:
+    if weights is None or tickers is None:
         abort(404)
 
     # always backtest using 5 years of data
-    amounts = [float(amount) for amount in amounts]
     start_date = TODAY_DATETIME - relativedelta(years=5)
     prices_all = get_prices(start_date, TODAY_DATETIME, tickers)
+    shares = [weights[j] / prices_all[j][0] for j in range(len(weights))]
 
     assert len(prices_all) == len(tickers)
-    assert len(prices_all) == len(amounts)
+    assert len(prices_all) == len(shares)
     market_caps = []
 
     for i in range(len(first_item_in_list(prices_all))):
         market_cap = 0
         for j in range(len(prices_all)):
-            market_cap += prices_all[j][i] * amounts[j]
+            market_cap += prices_all[j][i] * shares[j]
         market_caps.append(market_cap)
 
     return jsonify(market_caps)
@@ -283,15 +283,16 @@ def improve_portfolio():
     )
 
 
-# FIXME TESTING
 @bp.route('/mvo', methods=('GET', ))
-def mvo_test():
+def get_mvo():
     mu_goal = request.args.get('mu_goal')
     cardinality = request.args.get('cardinality')
     if not mu_goal or not cardinality:
         abort(404)
-    mu_goal = float(mu_goal)
-    mu_goal = (1 + mu_goal)**(1 / 52) - 1
+    print(mu_goal)
+    print(cardinality)
+    mu_goal = (1 + float(mu_goal))**(1 / 52) - 1
+    print(mu_goal)
     cardinality = float(cardinality)
     cov = get_covariance_matrix(TICKERS)
     mu = get_mu_vector()
@@ -312,14 +313,20 @@ def mvo_test():
         md_mu.append(mu[i])
 
     md_cov = get_covariance_matrix(md_tickers)
-    portfolio, port_var, port_ret = mvo(md_cov, md_mu, mu_goal, rf)
-
+    portfolio, port_var, port_ret = mvo(md_cov, md_mu, mu_goal)
+    sharpe_ratio = (port_ret - rf) / math.pow(port_var, 0.5)
     port_ret = (1 + port_ret)**52 - 1
     sigma = math.pow(52 * port_var, 0.5)
+    # 1000 simulations with
+    monte_carlo_simulations = monte_carlo(port_ret, sigma, 52, 1000)
+    var, cvar = var_calc(monte_carlo_simulations, 0.01)
 
     return jsonify({
         'tickers': md_tickers,
         'portfolio': portfolio.tolist(),
         'sigma': sigma,
+        'sharpe_ratio': sharpe_ratio,
         'ret': port_ret
+        'var': var,
+        'cvar': cvar
     })

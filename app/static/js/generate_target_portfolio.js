@@ -81,7 +81,7 @@ function generate_portfolio(){
             if (portfolio_data['portfolio'][i]>0){
                 labels.push(portfolio_data['tickers'][i]);
             } else {
-                label.push('['+portfolio_data['tickers'][i]+']');
+                labels.push('['+portfolio_data['tickers'][i]+']');
             }
         }
         new Chart(document.getElementById("doughnut-chart"), {

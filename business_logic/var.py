@@ -2,7 +2,7 @@ import numpy as np
 import math
 
 
-def monte_carlo(rf, psigma, length, nsim):
+def monte_carlo(pret, psigma, length, nsim):
     """
     :param rf: portfolio's weekly return, scalar
     :param psigma: portfolio's weekly std dev, scalar
@@ -22,15 +22,13 @@ def monte_carlo(rf, psigma, length, nsim):
             else:
                 z = np.random.standard_normal(1)[0]
                 # % change in portfolio value compared to last week
-                paths[i, j] = math.exp((rf - ((psigma**2)/2)) + psigma*z) - 1
-
+                paths[i, j] = math.exp((pret - ((psigma**2)/2)) + psigma*z) - 1
     return paths
 
 
 def var_calc(rets, alpha):
     """
     :param rets:is an np.array((n,m)) from monte_carlo
-    :param ret_type: determines the shape of the rets matrix, scalar
     :param alpha: The VaR returned will be the 1-alpha percentile of losses
     :return (var, cvar): the alpha var and alpha cvar of the porfolio in % of portfolio value
     """
