@@ -163,7 +163,7 @@ def back_test_rebalancing_portfolio():
         transaction_costs.append(curr_transaction_cost)
 
     return jsonify({
-        'market_caps': market_caps,
+        'portfolio_value': market_caps,
         'transaction_costs': transaction_costs
     })
 
