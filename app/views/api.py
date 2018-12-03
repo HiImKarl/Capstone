@@ -135,7 +135,7 @@ def back_test_rebalancing_portfolio():
     curr_transaction_cost = 0
 
     rebalance_interval = int(len(first_item_in_list(prices_all)) / 5)
-    for i in range(1, len(first_item_in_list(prices_all))):
+    for i in range(len(first_item_in_list(prices_all))):
 
         market_cap = 0
         for j in range(len(tickers)):
