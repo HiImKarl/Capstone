@@ -1,18 +1,21 @@
-import numpy as np
 import math
+import numpy as np
 from flask import (
-    Blueprint, abort, request, jsonify, render_template
+    Blueprint, abort, request, jsonify
 )
 from app.db import (
-    get_db, get_covariance_matrix, get_mu_vector, get_views, get_portfolio_id,
+    get_db, get_covariance_matrix, get_mu_vector, get_portfolio_id,
     get_market_caps, get_prices, get_portfolio, get_returns
 )
-from app.data import TICKERS, RISK_FREE, TODAY_DATETIME
-from app.util import first_item_in_list
+from app.data import TICKERS, RISK_FREE, TODAY_DATETIME, FF_FACTORS
+from app.util import first_item_in_list, limit_list_size
 from business_logic.black_litterman import black_litterman
 from business_logic.md_mvo import cov_to_cor, md_mvo
 from business_logic.mvo import mvo
 from business_logic.var import p_metrics
+from business_logic.farma_french import (
+    ff3_cov_est, ff3_return_estimates, ff3_ols
+)
 from dateutil.relativedelta import relativedelta
 
 bp = Blueprint('api', __name__, url_prefix='/api')
@@ -62,15 +65,116 @@ def md_mvo_test():
     return jsonify(buckets.tolist())
 
 
+def rebalance_portfolio(start_date, end_date, tickers, return_goal):
+    """
+    :param start_date:
+    :param end_date:
+    :param tickers:
+    :return: new rebalancing weights
+    """
+    prices = get_prices(start_date, end_date, tickers)
+    returns = [prices[i] / prices[i - 1] for i in range(len(prices))]
+    factors = limit_list_size(FF_FACTORS, len(returns[0]))
+    factors = np.array(factors, dtype=np.float64)
+    risk_free = limit_list_size(RISK_FREE, len(returns[0]))
+    risk_free = np.array(risk_free, dtype=np.float64)
+    returns = np.array(returns, dtype=np.float64)
+    returns = np.transpose(returns)
+
+    coefficients = ff3_ols(returns, factors, risk_free)
+    ff_returns = ff3_return_estimates(returns, factors, risk_free, coefficients)
+    ff_covariances = ff3_cov_est(returns, factors, risk_free, coefficients)
+    p_weights, p_var, p_return = mvo(ff_covariances,
+                                     ff_returns, return_goal)
+
+    return p_weights
+
+
+def calculate_transaction_costs(shares, rebalanced_shares, prices):
+    """
+    n = # of tickers in portfolio
+    :param shares: n x 1 array of shares before rebalancing
+    :param rebalanced_shares: n x 1 array of shares after rebalancing
+    :param prices: n x 1 array of asset costs
+    :return: total cost of rebalancing
+    """
+
+    # FIXME isn't this too ligma?
+    return 5 * len(shares)
+
+
+@bp.route('/back_test_rebalancing_portfolio', methods=('GET', ))
+def back_test_rebalancing_portfolio():
+    """
+    m = # of data points (weekly)
+    :return: m x 1 np array; back tested capitalizations of
+    the portfolio as a percentage of the initial value of the portfolio
+    This will perform rebalancing
+    """
+    tickers = request.args.getlist('tickers[]')
+    weights = request.args.getlist('weights[]')
+    return_goal = request.args.get('return_goal')
+
+    if not tickers or not weights or not return_goal:
+        abort(404)
+
+    weights = [float(weight) for weight in weights]
+    return_goal = (1 + float(return_goal))**(1 / 52) - 1
+    start_date = TODAY_DATETIME - relativedelta(years=5)
+    curr_date = start_date
+    prices_all = get_prices(start_date, TODAY_DATETIME, tickers)
+
+    assert len(prices_all) == len(weights)
+
+    # current and historical market cap,
+    # assume the initial portfolio value is 1 dollar
+    market_caps = []
+    shares = [weights[j] / prices_all[j][0] for j in range(len(weights))]
+
+    transaction_costs = []
+    curr_transaction_cost = 0
+
+    rebalance_interval = int(len(first_item_in_list(prices_all)) / 5)
+    for i in range(1, len(first_item_in_list(prices_all))):
+
+        market_cap = 0
+        for j in range(len(tickers)):
+            market_cap += prices_all[j][i] * shares[j]
+        market_caps.append(market_cap)
+
+        if rebalance_interval == 0:
+            curr_date += relativedelta(years=1)
+            rebalanced_weights = rebalance_portfolio(
+                curr_date - relativedelta(years=1), curr_date, tickers, return_goal)
+
+            assert len(prices_all) == len(rebalanced_weights)
+            rebalanced_shares = [market_cap * rebalanced_weights[j] / prices_all[j][i]
+                                 for j in range(len(rebalanced_weights))]
+
+            rebalance_interval = int(len(first_item_in_list(prices_all)) / 5)
+            curr_transaction_cost += 5 * calculate_transaction_costs(
+                shares, rebalanced_shares, [prices[i] for prices in prices_all]
+            )
+
+            shares = rebalanced_shares
+        else:
+            rebalance_interval -= 1
+
+        transaction_costs.append(curr_transaction_cost)
+
+    return jsonify({
+        'market_caps': market_caps,
+        'transaction_costs': transaction_costs
+    })
+
+
 @bp.route('/back_test_user', methods=('GET',))
 def back_test_user_portfolio():
     """
-    n = # of assets
     m = # of data points (weekly)
-    :param portfolio: n x 1 np array;
     :return: m x 1 np array; back tested caps of the portfolio
+    This will not perform rebalancing
     """
-
     # always backtest using 5 years of data
     user_id = float(request.args.get('user_id'))
     portfolio_id = get_portfolio_id(user_id)
@@ -86,6 +190,37 @@ def back_test_user_portfolio():
         market_cap = 0
         for j in range(len(prices_all)):
             market_cap += prices_all[j][i] * portfolio['amount'][j]
+        market_caps.append(market_cap)
+
+    return jsonify(market_caps)
+
+
+@bp.route('/back_test_portfolio', methods=('GET', ))
+def back_test_portfolio():
+    """
+    m = # of data points (weekly)
+    :return: m x 1 np array; back tested caps of the portfolio
+    This will not perform rebalancing
+    """
+    amounts = request.args.getlist('weights[]')
+    tickers = request.args.getlist('tickers[]')
+
+    if amounts is None or tickers is None:
+        abort(404)
+
+    # always backtest using 5 years of data
+    amounts = [float(amount) for amount in amounts]
+    start_date = TODAY_DATETIME - relativedelta(years=5)
+    prices_all = get_prices(start_date, TODAY_DATETIME, tickers)
+
+    assert len(prices_all) == len(tickers)
+    assert len(prices_all) == len(amounts)
+    market_caps = []
+
+    for i in range(len(first_item_in_list(prices_all))):
+        market_cap = 0
+        for j in range(len(prices_all)):
+            market_cap += prices_all[j][i] * amounts[j]
         market_caps.append(market_cap)
 
     return jsonify(market_caps)

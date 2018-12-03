@@ -26,7 +26,7 @@ def budget(x, data):
     return np.sum(x)-1
 
 
-def mvo(q, mu, mu_goal,  short_selling_bound=-np.inf):
+def mvo(q, mu, mu_goal, short_selling_bound=-np.inf):
     """
     n = # assets
     :param q: 2d n x n numpy covariance matrix
