@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="03a8770c-a22b-4944-93d6-696e64471c64" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/js/generate_target_portfolio.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/js/generate_target_portfolio.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/js/set_portfolio.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/js/set_portfolio.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/business_logic/var.py" beforeDir="false" afterPath="$PROJECT_DIR$/business_logic/var.py" afterDir="false" />
-    </list>
+    <list default="true" id="03a8770c-a22b-4944-93d6-696e64471c64" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -430,12 +423,12 @@
       <workItem from="1543441054181" duration="5816000" />
       <workItem from="1543519210281" duration="10479000" />
       <workItem from="1543607088817" duration="40353000" />
-      <workItem from="1543847835500" duration="3873000" />
+      <workItem from="1543847835500" duration="4316000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="162286000" />
+    <option name="totallyTimeSpent" value="162729000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
