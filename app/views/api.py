@@ -79,12 +79,14 @@ def portfolio_statistics():
     covariance = np.array(covariance, dtype=np.float64)
 
     cov_p = np.matmul(np.matmul(np.transpose(weights), covariance), weights)
-    cov_p *= math.pow(52, 0.5)
+    cov_p *= 52
+    cov_p = math.pow(cov_p, 0.5)
     monte_carlo_simulations = monte_carlo(mu_p, cov_p, 52, MONTE_CARLO_SIMULATIONS)
     var, cvar = var_calc(monte_carlo_simulations, 0.01)
 
     mu_p = (1 + mu_p)**52 - 1
-    sharpe_ratio = (mu_p - RISK_FREE[-1]) / cov_p
+    yearly_rf = (1 + RISK_FREE[-1])**52 - 1
+    sharpe_ratio = (mu_p - yearly_rf) / cov_p
 
     return jsonify({
         'sigma': cov_p,
@@ -323,7 +325,8 @@ def improve_portfolio():
     mu_p = (1 + mu_p)**52 - 1
     print(mu_p)
     sd_p *= math.pow(52, 0.5)
-    sharpe_p = (mu_p - risk_free_rate) / sd_p
+    yearly_rf = (1 + risk_free_rate)**52 - 1
+    sharpe_p = (mu_p - yearly_rf) / sd_p
     monte_carlo_simulations = monte_carlo(mu_p, sd_p, 52, MONTE_CARLO_SIMULATIONS)
     var, cvar = var_calc(monte_carlo_simulations, 0.01)
     return jsonify(
@@ -370,9 +373,10 @@ def get_mvo():
 
     md_cov = get_covariance_matrix(md_tickers)
     portfolio, port_var, port_ret = mvo(md_cov, md_mu, mu_goal)
-    sharpe_ratio = (port_ret - rf) / math.pow(port_var, 0.5)
     port_ret = (1 + port_ret)**52 - 1
     sigma = math.pow(52 * port_var, 0.5)
+    yearly_rf = (1 + RISK_FREE[-1])**52 - 1
+    sharpe_ratio = (port_ret - yearly_rf) / sigma
     # 1000 simulations with
     monte_carlo_simulations = monte_carlo(port_ret, sigma, 52, MONTE_CARLO_SIMULATIONS)
     var, cvar = var_calc(monte_carlo_simulations, 0.01)

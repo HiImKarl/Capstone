@@ -17,13 +17,13 @@ INTRINIO_URL_BASE = 'https://api.intrinio.com/'
 KIBOT_URL_BASE = 'http://api.kibot.com/'
 
 # start end dates in datetime format
-TODAY_DATETIME = datetime.datetime.strptime('2018-10-26', '%Y-%m-%d')
+TODAY_DATETIME = datetime.datetime.strptime('2018-08-31', '%Y-%m-%d')
 PAST_DATETIME = datetime.datetime.now() - relativedelta(years=10)
 
 with open('data/stock_tickers.csv', 'r') as f:
     reader = csv.reader(f)
     STOCK_TICKERS = [ticker.strip() for ticker in list(reader)[0]]
-    STOCK_TICKERS = STOCK_TICKERS[0:10]
+    STOCK_TICKERS = STOCK_TICKERS[0:50]
 
 # FIXME can't find data for etf market cap, so just assume
 # constant shares outstanding...
