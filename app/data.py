@@ -23,7 +23,6 @@ PAST_DATETIME = datetime.datetime.now() - relativedelta(years=10)
 with open('data/stock_tickers.csv', 'r') as f:
     reader = csv.reader(f)
     STOCK_TICKERS = [ticker.strip() for ticker in list(reader)[0]]
-    # FIXME
     STOCK_TICKERS = STOCK_TICKERS[0:10]
 
 # FIXME can't find data for etf market cap, so just assume

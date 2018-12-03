@@ -12,7 +12,7 @@ from app.util import first_item_in_list, limit_list_size
 from business_logic.black_litterman import black_litterman
 from business_logic.md_mvo import cov_to_cor, md_mvo
 from business_logic.mvo import mvo
-from business_logic.var import p_metrics, monte_carlo
+from business_logic.var import p_metrics, monte_carlo, var_calc
 from business_logic.farma_french import (
     ff3_cov_est, ff3_return_estimates, ff3_ols
 )
@@ -42,6 +42,8 @@ def assets():
 def portfolios():
     user_id = float(request.args.get('user_id'))
     portfolio_id = get_portfolio_id(user_id)
+    if portfolio_id is None:
+        return jsonify({})
     portfolio = get_portfolio(portfolio_id)
     return jsonify(portfolio)
 
@@ -326,7 +328,7 @@ def get_mvo():
         'portfolio': portfolio.tolist(),
         'sigma': sigma,
         'sharpe_ratio': sharpe_ratio,
-        'ret': port_ret
+        'ret': port_ret,
         'var': var,
         'cvar': cvar
     })
