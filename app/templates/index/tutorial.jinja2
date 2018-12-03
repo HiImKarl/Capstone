@@ -35,18 +35,24 @@
   <div class="step minimized">
     <div class="step-header">
       <div class="header">Let's generate a portfolio which beats our current one.</div>
-      <div class="subheader">We can choose a time range to test our set_portfolio on.</div>
+      <div class="subheader">We will generate a portfolio using the same assets with a better return than your current portfolio.</div>
     </div>
     <div class="step-content three">
+      <video id = "vid3" height = "420px" width = "100%" controls>
+        <source src="{{ url_for('static', filename = 'assets/tut3.mp4')}}" type="video/mp4">
+      </video>
       <button class="next-btn" id = "btn-three">Next</button>
     </div>
   </div>
   <div class="step minimized">
     <div class="step-header">
       <div class="header">Finally, we can try and generate a completely new portfolio.</div>
-      <div class="subheader">This portfolio will have the lowest variance, and a target return on a time period .</div>
+      <div class="subheader">This portfolio will have the lowest variance, and a target return over the last 5 years.</div>
     </div>
     <div class="step-content four">
+      <video id = "vid4" height = "420px" width = "100%" controls>
+        <source src="{{ url_for('static', filename = 'assets/tut4.mp4')}}" type="video/mp4">
+      </video>
       <button class="close-btn" id = "btn-four">Close</button>
     </div>
   </div>

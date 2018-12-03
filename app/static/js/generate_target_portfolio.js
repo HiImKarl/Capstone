@@ -46,12 +46,12 @@ function generate_portfolio(){
         var doc = document.getElementById("replace");
         doc.innerHTML = "<div class  = \"card-header bg-light\" style = \"height: 15px !important\"></div><h3 style = \"margin-top: 20px;\"class=\"card-title\">Generated Portfolio of Assets</h3><div style = \"display: flex !important;justify-content: center; box-shadow: 0 !important;margin-bottom: 15px !important; padding: 20px 0;\"><ul id = \"lol\" class = \"card bg-light mb-3 list-group\" style=\"margin-left: 10%; display: inline; width:40%; height:390px; overflow:hidden; overflow-y: scroll; text-align: left; border: 1px solid gray\"></ul><div style = \"width: 55%; height = 55%;\"><canvas id=\"doughnut-chart\" style = \"width:100% !important; height: 100% !important; margin-right: 0 !important;\" h></canvas></div></div><div id = 'stats' style = 'display: block; align-items: center'></div><div class=\"card-footer text-muted\"></div</div>"
         
-        let arr = ["<div class=\"card-header\">Ticker in Portfolio: Number of Asset</div>"];
+        let arr = ["<div class=\"card-header\">Ticker [Number of stock] (Asset Value $USD per stock)</div>"];
         for (let i = 0; i < portfolio_data['portfolio'].length; i++){
             
             let ticker = portfolio_data['tickers'][i];
             let amount = portfolio_data['portfolio'][i];
-            arr.push("<li class=\"list-group-item\">"+ ticker + " [amount: " + amount+"] ($"+ (stock_prices[ticker]*amount).toString()+")</li>" );
+            arr.push("<li class=\"list-group-item\">"+ ticker + " [amount: " + amount+"] ($"+ (stock_prices[ticker]).toString()+")</li>" );
         };
 
         var args_String = arr.join('');
@@ -61,7 +61,7 @@ function generate_portfolio(){
         for (header in portfolio_data){
             switch (header){
                 case "ret":
-                    stats.push(card("Average Yearly Return of Portfolio", (portfolio_data[header]*100).toString() + "%", "The higher, the better. This tells you how much your portfolio is increasing/decreasing every week."));
+                    stats.push(card("Average Yearly Return of Portfolio", (portfolio_data[header]*100).toString() + "%", "The higher, the better. This tells you how much your portfolio is increasing in value every year."));
                     continue;
                 case "sigma":
                     stats.push(card("Sigma of Portfolio", portfolio_data[header] + "%", "The standard deviation of this Portfolio. The higher, the more risky and unpredictable the portfolio."));

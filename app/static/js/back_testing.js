@@ -4,30 +4,43 @@ var months = ['01-Dec-13', '02-Dec-13', '03-Dec-13', '04-Dec-13', '05-Dec-13', '
 function generate_better(user_id){
     let better_portfolio = {};
     let chart_data;
+    let passed_data;
     document.getElementsByClassName("tooltip-inner")[0].style.display = "None";
     $.getJSON('/api/back_test_user?user_id='+ user_id, 
-        function(data) {
-            chart_data = data;
+        function(data1) {
+            chart_data = data1;
         }).done(function() {$.getJSON('/api/improve_portfolio?user_id=' + user_id, 
-            function(data){
-                sharpe = data['sharpe_p'];
-                return_val = data['return'];
-                sigma = data['sigma'];
+            function(data2){
+                sharpe = data2['sharpe_p'];
+                return_val = data2['return'];
+                sigma = data2['sigma'];
                 //better stores the weights of our new assets
-                for (let i = 0; i < data['ticker'].length; i++){
-                    better_portfolio[data['ticker'][i]] = data['weights'][i];
+                for (let i = 0; i < data2['ticker'].length; i++){
+                    better_portfolio[data2['ticker'][i]] = data2['weights'][i];
                 }
-                let get_request = JSON.stringify({ 'tickers': data['ticker'], 'weights': data['weights']});
-                $.getJSON('/api/back_test_rebalancing_portfolio', get_request, function(data) {
-                    console.log(data);
+                let get_request = {'tickers': data2['ticker'], 'weights': data2['weights'], "return_goal": return_val};
+                $.getJSON('/api/back_test_rebalancing_portfolio', get_request, function(data3) {
+                    passed_data = data3;
+                    
+                }).done(function(){
+                    display_both_portfolios(passed_data, chart_data, better_portfolio, user_id);
                 })
-                display_both_portfolios(chart_data, better_portfolio, user_id);
-            })
+                
         })
+    })
 };
 
-function display_both_portfolios(chart_data, better, user_id) {
+//new portfolio data is the new one, has transaction costs
+function display_both_portfolios(new_portfolio_data, chart_data, better, user_id) {
         let user_portfolio = {}
+        let asset_prices = {};
+        $.getJSON('/api/assets', function(data) {
+            let tickers = data['tickers'];
+            let prices = data['prices'];
+            for (let i = 0; i < tickers.length; ++i) {
+                asset_prices[tickers[i]] = prices[i];
+            }
+        }).done(function() {
         $.getJSON('/api/portfolios?user_id=' + user_id, function(data){
             let new_amounts = data['amount'];
             new_tickers = data['ticker'];
@@ -35,17 +48,18 @@ function display_both_portfolios(chart_data, better, user_id) {
                 user_portfolio[new_tickers[i]] = new_amounts[i];
             }
         }).done(function(){
-        var table = "<div class = 'tablewrapper'><table class='table'><thead><tr><th scope='col'>Ticker</th><th scope='col'>Value per stock($USD)</th><th scope='col'>Amount in Your Portfolio</th><th scope='col'>Amount in generated</th></tr></thead><tbody id = 'bodytable'></tbody></table></div>";
+        var table = "<div class = 'tablewrapper'><table class='table'><thead><tr><th scope='col'>Ticker</th><th scope='col'>Value per stock($USD)</th><th scope='col'>Amount in Your Portfolio</th><th scope='col'>Ratio of amounts in generated</th></tr></thead><tbody id = 'bodytable'></tbody></table></div>";
         document.getElementById("card-page").innerHTML = "<div class=\"card border-primary mb-4 text-center hoverable\" style = \"width: 70%; margin: 0 auto; height: 50%;padding: 20px 0\"><canvas id = 'newCanvas'></canvas>"+ table;
         document.getElementById("card-page").setAttribute("style", "width: 95%; margin-bottom: 40px; background: transparent");
-        document.getElementsByClassName("arrow")[0].style.display = "None";
         var ctx = document.getElementById("newCanvas");
         var table_data = '';
         for (ticker in better){
             let curr = "<tr>";
-            curr +=  "<th scope='row'>"+ticker+"</th><td>$5 placeholder</td><td>"+user_portfolio[ticker]+"</td><td>"+better[ticker]+"</td></tr>";
+            curr += "<th scope='row'>"+ticker+"</th><td> $"+asset_prices[ticker]+"</td><td>"+user_portfolio[ticker]+"</td><td>"+better[ticker]+"</td></tr>";
             table_data += curr;
         }
+        var new_portfolio_values = new_portfolio_data['portfolio_value'];
+        table_data += "<tr><th scope='row'>Total Value</th><td></td><td>"+chart_data[chart_data.length-1]+"</td><td>"+new_portfolio_values[new_portfolio_values.length-1]*chart_data[0]+"</td></tr></tr>";
         document.getElementById('bodytable').innerHTML = table_data;
         var display_data = [];
         for (var i = 0; i < months.length; i++){
@@ -56,6 +70,20 @@ function display_both_portfolios(chart_data, better, user_id) {
         while (display_data.length % 23 != 0) {
             display_data.shift();
             chart_data.shift();
+        }
+
+        var new_portfolio_trans_cost = new_portfolio_data['transaction_costs'];
+        var initial_cost = chart_data[0];
+        var new_portfolio_chart_data = [];
+        var new_portfolio_chart_data_with_transactions = [];
+        for (let i = 0; i < new_portfolio_values.length; i++){
+            new_portfolio_chart_data_with_transactions.push(new_portfolio_values[i]*initial_cost-new_portfolio_trans_cost[i]);
+            new_portfolio_chart_data.push(new_portfolio_values[i]*initial_cost);
+        }
+        while (new_portfolio_chart_data.length > display_data.length){
+            new_portfolio_chart_data.pop();
+            new_portfolio_chart_data_with_transactions.pop();
+            new_portfolio_trans_cost.pop();
         }
         ctx.style.backgroundColor = 'white';
         var myChart = new Chart(ctx, {
@@ -68,7 +96,34 @@ function display_both_portfolios(chart_data, better, user_id) {
                 borderColor: "#3e95cd",
                 fill: false,
                 label: "Your Portfolio"
+                },
+                {                
+                    lineTension: 0,
+                    data: new_portfolio_chart_data_with_transactions,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false,
+                    label: "Generated Portfolio minus transaction costs",
+                    hidden: true
+
+                },
+                {
+                    lineTension: 0,
+                    data: new_portfolio_chart_data,
+                    borderColor:  "#8e5ea2",
+                    fill: false,
+                    label: "Generated Portfolio"
+                    
+                },
+                {
+                    lineTension: 0,
+                    data: new_portfolio_trans_cost,
+                    borderColor:  "red",
+                    fill: false,
+                    label: "Transaction costs",
+                    hidden: true
+                    
                 }
+
             ]
             },
             options: {
@@ -86,7 +141,6 @@ function display_both_portfolios(chart_data, better, user_id) {
                     xAxes: [{
                         scaleLabel: {
                           display: true,
-                          labelString: 'Date: Day/Month/Year',
                           fontSize: 16
                         }
                       }] 
@@ -99,6 +153,7 @@ function display_both_portfolios(chart_data, better, user_id) {
             }
         });
     })
+    })
 };
 
 function backtest(user_id) {
@@ -110,7 +165,7 @@ function backtest(user_id) {
             get_request['weights'] = data['amount'];
             get_request['tickers'] = data['ticker'];
         }).done(function(){
-        $.getJSON('/api/back_test_portfolio', JSON.stringify(get_request), function(data) {
+        $.getJSON('/api/back_test_portfolio', get_request, function(data) {
             chart_data = data;
         }).done(function() {
             document.getElementById("card-page").innerHTML = "<canvas id = 'myChart'></canvas>";
