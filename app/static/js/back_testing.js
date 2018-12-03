@@ -18,10 +18,9 @@ function generate_better(user_id){
                 for (let i = 0; i < data2['ticker'].length; i++){
                     better_portfolio[data2['ticker'][i]] = data2['weights'][i];
                 }
-                let get_request = {'tickers': data2['ticker'], 'weights': data2['weights'], "return_goal": return_val};
-                $.getJSON('/api/back_test_rebalancing_portfolio', get_request, function(data3) {
+                let get_request = {'tickers': data2['ticker'], 'weights': data2['weights']};
+                $.getJSON('/api/back_test_portfolio', get_request, function(data3) {
                     passed_data = data3;
-                    
                 }).done(function(){
                     display_both_portfolios(passed_data, chart_data, better_portfolio, user_id);
                 })
@@ -59,7 +58,7 @@ function display_both_portfolios(new_portfolio_data, chart_data, better, user_id
             table_data += curr;
         }
         var new_portfolio_values = new_portfolio_data['portfolio_value'];
-        table_data += "<tr><th scope='row'>Total Value</th><td></td><td>"+chart_data[chart_data.length-1]+"</td><td>"+new_portfolio_values[new_portfolio_values.length-1]*chart_data[0]+"</td></tr></tr>";
+        table_data += "<tr><th scope='row'>Total Value</th><td></td><td>"+chart_data[chart_data.length-1]+"</td><td>"+new_portfolio_data[new_portfolio_data.length-1]*chart_data[0]+"</td></tr></tr>";
         document.getElementById('bodytable').innerHTML = table_data;
         var display_data = [];
         for (var i = 0; i < months.length; i++){
@@ -72,19 +71,21 @@ function display_both_portfolios(new_portfolio_data, chart_data, better, user_id
             chart_data.shift();
         }
 
-        var new_portfolio_trans_cost = new_portfolio_data['transaction_costs'];
+        // var new_portfolio_trans_cost = new_portfolio_data['transaction_costs'];
         var initial_cost = chart_data[0];
         var new_portfolio_chart_data = [];
-        var new_portfolio_chart_data_with_transactions = [];
-        for (let i = 0; i < new_portfolio_values.length; i++){
-            new_portfolio_chart_data_with_transactions.push(new_portfolio_values[i]*initial_cost-new_portfolio_trans_cost[i]);
-            new_portfolio_chart_data.push(new_portfolio_values[i]*initial_cost);
+        // var new_portfolio_chart_data_with_transactions = [];
+        for (let i = 0; i < new_portfolio_data.length; i++){
+            // new_portfolio_chart_data_with_transactions.push(new_portfolio_values[i]*initial_cost-new_portfolio_trans_cost[i]);
+            new_portfolio_chart_data.push(new_portfolio_data[i]*initial_cost);
         }
-        while (new_portfolio_chart_data.length > display_data.length){
-            new_portfolio_chart_data.pop();
-            new_portfolio_chart_data_with_transactions.pop();
-            new_portfolio_trans_cost.pop();
+        while (new_portfolio_data.length > display_data.length){
+            new_portfolio_data.pop();
+        //     new_portfolio_chart_data_with_transactions.pop();
+        //     new_portfolio_trans_cost.pop();
         }
+        console.log(new_portfolio_data.length);
+        console.log(chart_data);
         ctx.style.backgroundColor = 'white';
         var myChart = new Chart(ctx, {
             type: 'line',
@@ -97,15 +98,15 @@ function display_both_portfolios(new_portfolio_data, chart_data, better, user_id
                 fill: false,
                 label: "Your Portfolio"
                 },
-                {                
-                    lineTension: 0,
-                    data: new_portfolio_chart_data_with_transactions,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false,
-                    label: "Generated Portfolio minus transaction costs",
-                    hidden: true
+                // {                
+                //     lineTension: 0,
+                //     data: new_portfolio_chart_data_with_transactions,
+                //     borderColor: 'rgba(75, 192, 192, 1)',
+                //     fill: false,
+                //     label: "Generated Portfolio minus transaction costs",
+                //     hidden: true
 
-                },
+                // },
                 {
                     lineTension: 0,
                     data: new_portfolio_chart_data,
@@ -113,16 +114,16 @@ function display_both_portfolios(new_portfolio_data, chart_data, better, user_id
                     fill: false,
                     label: "Generated Portfolio"
                     
-                },
-                {
-                    lineTension: 0,
-                    data: new_portfolio_trans_cost,
-                    borderColor:  "red",
-                    fill: false,
-                    label: "Transaction costs",
-                    hidden: true
-                    
                 }
+                // {
+                //     lineTension: 0,
+                //     data: new_portfolio_trans_cost,
+                //     borderColor:  "red",
+                //     fill: false,
+                //     label: "Transaction costs",
+                //     hidden: true
+                    
+                // }
 
             ]
             },
